@@ -1,25 +1,8 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { UserButton } from '@clerk/nextjs';
-import { PrismaClient, Prisma } from '@prisma/client';
 
 export default function Home() {
-  const prisma = new PrismaClient();
-
-  async function main() {
-    let includePosts: boolean = false;
-    let user: Prisma.UserCreateInput;
-
-    user = {
-      email: 'elsa@prisma.io',
-      name: 'Elsa Prisma',
-    };
-
-    // Pass 'user' object into query
-    const createUser = await prisma.user.create({ data: user });
-  }
-
-  main();
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
