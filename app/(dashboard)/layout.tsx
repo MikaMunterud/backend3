@@ -35,9 +35,9 @@ export default function DashboardLayout({
         stores={exampleStores}
       />
 
-      <div className="flex-col">
+      <main className="flex-col">
         <div className="flex-1 space-y-4 p-8 pt-6">{children}</div>
-      </div>
+      </main>
     </>
   );
 }
