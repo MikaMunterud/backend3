@@ -3,10 +3,14 @@ import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
+  try {
   const body = await req.json();
   const { name } = body;
   
-  const store = await prismadb.store.create({ data: { name }})
+  const resp = await prismadb.store.create({ data: { name }})
 
-  return NextResponse.json(store);
+    return NextResponse.json(resp);
+  } catch (error) {
+    return NextResponse.json({error})
+  }
 }
