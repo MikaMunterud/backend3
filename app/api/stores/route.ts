@@ -1,11 +1,19 @@
 import prismadb from '@/lib/prismadb';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import { fromZodError } from 'zod-validation-error';
+
+const StoreSchema = z.object({
+  name: z.string()
+})
 
 export async function POST(req: Request) {
   try {
     const { userId } = auth();
     const body = await req.json();
+
+    StoreSchema.parse(body); 
 
     const { name } = body;
 
@@ -20,8 +28,9 @@ export async function POST(req: Request) {
     const store = await prismadb.store.create({ data: { name } });
 
     return NextResponse.json(store);
-  } catch (error) {
-    return NextResponse.json({ error });
+  } catch (error: any) {
+    const validationError = fromZodError(error);
+    return NextResponse.json(validationError);
   }
 }
 
