@@ -2,6 +2,7 @@
 
 import Header from '@/components/header';
 import { usePathname } from 'next/navigation';
+import React from 'react';
 
 const dashboardLinks = [
   { label: 'Overview', href: '/' },
@@ -15,11 +16,6 @@ const dashboardLinks = [
   // Add more links as needed
 ];
 
-const exampleStores = [
-  { label: 'Store-1', value: 'Store-1' },
-  { label: 'Store-2', value: 'Store-2' },
-];
-
 export default function DashboardLayout({
   children,
 }: {
@@ -29,12 +25,7 @@ export default function DashboardLayout({
 
   return (
     <>
-      <Header
-        links={dashboardLinks}
-        currentUrl={pathname}
-        stores={exampleStores}
-      />
-
+      <Header links={dashboardLinks} currentUrl={pathname} />
       <main className="flex-col">
         <div className="flex-1 space-y-4 p-8 pt-6">{children}</div>
       </main>
