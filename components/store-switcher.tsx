@@ -20,14 +20,16 @@ import {
 } from '@/components/ui/popover';
 
 import { Store } from 'lucide-react';
+import { useModalStore } from '@/hooks/use-store-modal';
 
 interface StoreSwitcherProps {
-  stores: { label: string; value: string }[];
+  stores: { name: string; id: string }[];
 }
 
 export function StoreSwitcher({ stores }: StoreSwitcherProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
+  const { openModal } = useModalStore();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -40,7 +42,9 @@ export function StoreSwitcher({ stores }: StoreSwitcherProps) {
         >
           <Store className="mr-2 h-4 w-4" />
           {value
-            ? stores.find((store) => store.value === value)?.label
+            ? stores.find(
+                (store) => store.name.toLowerCase() === value.toLowerCase(),
+              )?.name
             : 'Select store...'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -52,9 +56,9 @@ export function StoreSwitcher({ stores }: StoreSwitcherProps) {
           <CommandGroup>
             {stores.map((store) => (
               <CommandItem
-                key={store.value}
+                key={store.id}
                 onSelect={(currentValue) => {
-                  setValue(currentValue === value ? '' : currentValue);
+                  setValue(currentValue);
                   setOpen(false);
                 }}
               >
@@ -62,15 +66,17 @@ export function StoreSwitcher({ stores }: StoreSwitcherProps) {
                 <Check
                   className={cn(
                     'mr-2 h-4 w-4',
-                    value === store.value ? 'opacity-100' : 'opacity-0',
+                    value.toLowerCase() === store.name.toLowerCase()
+                      ? 'opacity-100'
+                      : 'opacity-0',
                   )}
                 />
-                {store.label}
+                {store.name}
               </CommandItem>
             ))}
           </CommandGroup>
           <CommandSeparator />
-          <CommandGroup>
+          <CommandGroup onClick={(e) => openModal()}>
             <CommandItem>
               <PlusCircle className="mr-2 h-5 w-5" />
               Create Store
