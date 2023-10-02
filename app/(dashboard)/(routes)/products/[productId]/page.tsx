@@ -1,3 +1,9 @@
-export default function ProductId() {
-  return <div>ProductId</div>;
+import { ProductForm } from './components/product-form';
+
+export default function Page() {
+  return (
+    <div>
+      <ProductForm />
+    </div>
+  );
 }
