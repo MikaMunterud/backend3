@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -27,9 +29,11 @@ export default function Products() {
             Manage products for your store
           </p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4" />
-        </Button>
+        <Link href={`/products/new`}>
+          <Button>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </Link>
       </div>
       <Separator />
       <div>
