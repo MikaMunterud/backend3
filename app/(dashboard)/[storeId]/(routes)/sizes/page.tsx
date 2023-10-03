@@ -1,3 +1,4 @@
+import { CellAction } from '@/components/cell-actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -50,9 +51,7 @@ export default function Sizes() {
                 <TableCell>Value</TableCell>
                 <TableCell>September 28th, 2023</TableCell>
                 <TableCell>
-                  <Button className="h-8 w-8 p-0" variant="ghost">
-                    ...
-                  </Button>
+                  <CellAction route={'sizes'} id={'dataID'} />
                 </TableCell>
               </TableRow>
             </TableBody>
