@@ -1,13 +1,13 @@
 // modalStore.js
 import { create } from 'zustand';
 
-interface ModalStore {
-  isModalOpen: boolean;
-  openModal: () => void;
-  closeModal: () => void;
+interface useStoreModalStore {
+  isOpen: boolean;
+  onOpen: () => void;
+  onClose: () => void;
 }
-export const useModalStore = create<ModalStore>((set) => ({
-  isModalOpen: false,
-  openModal: () => set({ isModalOpen: true }),
-  closeModal: () => set({ isModalOpen: false }),
+export const useModalStore = create<useStoreModalStore>((set) => ({
+  isOpen: false,
+  onOpen: () => set({ isOpen: true }),
+  onClose: () => set({ isOpen: false }),
 }));

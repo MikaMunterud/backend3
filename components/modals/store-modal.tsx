@@ -28,7 +28,7 @@ import { useModalStore } from '@/hooks/use-store-modal';
 import axios from 'axios';
 
 export default function StoreModal() {
-  const { isModalOpen, closeModal } = useModalStore();
+  const { isOpen, onClose } = useModalStore();
 
   const formSchema = z.object({
     name: z.string().min(2, {
@@ -49,7 +49,7 @@ export default function StoreModal() {
       const { name } = values;
       const response = await axios.post('/api/stores', { name });
       console.log(response.data);
-      closeModal();
+      onClose();
       window.location.reload();
     } catch (error) {
       console.log(error);
@@ -57,7 +57,7 @@ export default function StoreModal() {
   }
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={(e) => closeModal()}>
+    <Dialog open={isOpen} onOpenChange={(e) => onClose()}>
       <DialogTrigger asChild></DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -88,7 +88,7 @@ export default function StoreModal() {
                     )}
                   />
                   <div className="space-x-2 flex items-center justify-end w-full">
-                    <Button variant="outline" onClick={(e) => closeModal()}>
+                    <Button variant="outline" onClick={(e) => onClose()}>
                       Cancel
                     </Button>
                     <Button type="submit">Continue</Button>

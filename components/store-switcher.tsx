@@ -29,7 +29,7 @@ interface StoreSwitcherProps {
 export function StoreSwitcher({ stores }: StoreSwitcherProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
-  const { openModal } = useModalStore();
+  const { onOpen } = useModalStore();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -76,7 +76,7 @@ export function StoreSwitcher({ stores }: StoreSwitcherProps) {
             ))}
           </CommandGroup>
           <CommandSeparator />
-          <CommandGroup onClick={(e) => openModal()}>
+          <CommandGroup onClick={(e) => onOpen()}>
             <CommandItem>
               <PlusCircle className="mr-2 h-5 w-5" />
               Create Store
