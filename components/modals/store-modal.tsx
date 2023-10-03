@@ -57,7 +57,6 @@ export default function StoreModal() {
       window.location.assign(`/${response.data.id}`);
       toast.success('Store created.');
     } catch (error) {
-      console.log(error);
       toast.error('Something went wrong.');
     } finally {
       setLoading(false);

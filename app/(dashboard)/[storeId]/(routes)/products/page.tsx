@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -11,12 +13,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
+import { useParams } from 'next/navigation';
 import { Plus } from 'lucide-react';
 
 export default function Products() {
   const productAmount: number = 2;
   const color = { backgroundColor: '#cecece' };
+  const params = useParams();
 
   return (
     <>
@@ -29,7 +32,7 @@ export default function Products() {
             Manage products for your store
           </p>
         </div>
-        <Link href={`/products/new`}>
+        <Link href={`/${params.storeId}/products/new`}>
           <Button>
             <Plus className="h-4 w-4" />
           </Button>
