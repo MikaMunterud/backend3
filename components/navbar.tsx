@@ -14,8 +14,6 @@ export default function Navbar({ links }: NavbarProps) {
   const params = useParams();
   const pathname = usePathname();
 
-  console.log(pathname.replace(/\/$/, ''));
-
   return (
     <NavigationMenu className="flex items-center space-x-4 lg:space-x-6 mx-6">
       {links.map(function (link) {
