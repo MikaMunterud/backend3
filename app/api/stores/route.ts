@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       return new NextResponse('Name is required', { status: 400 });
     }
 
-    const store = await prismadb.store.create({ data: { name } });
+    const store = await prismadb.store.create({ data: { name, userId } });
 
     return NextResponse.json(store);
   } catch (error) {
@@ -33,7 +33,7 @@ export async function GET(req: Request) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const stores = await prismadb.store.findMany({});
+    const stores = await prismadb.store.findMany({ where: { userId } });
 
     return NextResponse.json(stores);
   } catch (error) {
