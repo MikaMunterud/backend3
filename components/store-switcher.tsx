@@ -21,15 +21,21 @@ import {
 
 import { Store } from 'lucide-react';
 import { useModalStore } from '@/hooks/use-store-modal';
-
+import { useParams, useRouter } from 'next/navigation';
 interface StoreSwitcherProps {
   stores: { name: string; id: string }[];
 }
 
 export function StoreSwitcher({ stores }: StoreSwitcherProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState('');
   const { onOpen } = useModalStore();
+
+  const params = useParams();
+  const router = useRouter();
+
+  const currentStore = stores.find(function (store) {
+    return store.id == params.storeId;
+  });
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -41,11 +47,7 @@ export function StoreSwitcher({ stores }: StoreSwitcherProps) {
           className="w-[200px] justify-between"
         >
           <Store className="mr-2 h-4 w-4" />
-          {value
-            ? stores.find(
-                (store) => store.name.toLowerCase() === value.toLowerCase(),
-              )?.name
-            : 'Select store...'}
+          {currentStore?.name}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -57,18 +59,16 @@ export function StoreSwitcher({ stores }: StoreSwitcherProps) {
             {stores.map((store) => (
               <CommandItem
                 key={store.id}
-                onSelect={(currentValue) => {
-                  setValue(currentValue);
+                onSelect={() => {
                   setOpen(false);
+                  router.push(`/${store.id}`);
                 }}
               >
                 <Store className="mr-2 h-4 w-4" />
                 <Check
                   className={cn(
                     'mr-2 h-4 w-4',
-                    value.toLowerCase() === store.name.toLowerCase()
-                      ? 'opacity-100'
-                      : 'opacity-0',
+                    currentStore?.id === store.id ? 'opacity-100' : 'opacity-0',
                   )}
                 />
                 {store.name}
