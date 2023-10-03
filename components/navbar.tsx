@@ -29,7 +29,7 @@ export default function Navbar({ links }: NavbarProps) {
               isActive ? 'text-black dark:text-white' : 'text-muted-foreground'
             }`}
             key={link.href}
-            href={`/${params.storeId}/${link.href}`}
+            href={`/${params.storeId}${link.href}`}
           >
             {link.label}
           </NavigationMenuLink>
