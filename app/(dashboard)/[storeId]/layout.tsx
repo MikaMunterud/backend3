@@ -1,7 +1,6 @@
 'use client';
 
 import Header from '@/components/header';
-import { usePathname } from 'next/navigation';
 import React from 'react';
 
 const dashboardLinks = [
@@ -21,11 +20,9 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-
   return (
     <>
-      <Header links={dashboardLinks} currentUrl={pathname} />
+      <Header links={dashboardLinks} />
       <main className="flex-col">
         <div className="flex-1 space-y-4 p-8 pt-6">{children}</div>
       </main>

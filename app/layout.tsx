@@ -1,7 +1,8 @@
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ThemeProvider } from '@/providers/theme-provider';
-import StoreModal from '@/components/modals/store-modal';
+import { ModalProvider } from '@/providers/modal-provider';
+import { ToastProvider } from '@/providers/toast-provider';
 
 export const metadata = {
   title: 'Next.js 13 with Clerk',
@@ -17,7 +18,8 @@ export default function RootLayout({
       <html lang="en">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <body>{children}</body>
-          <StoreModal />
+          <ToastProvider />
+          <ModalProvider />
         </ThemeProvider>
       </html>
     </ClerkProvider>
