@@ -24,6 +24,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
+import ImageUpload from '@/components/ui/image-upload';
 
 // Example data for the form.
 const sizes = [
@@ -66,6 +67,7 @@ export function ProductForm() {
       sizeId: '',
       categoryId: '',
       colorId: '', // Add the colorId field
+      images: [],
     },
   });
 
@@ -77,214 +79,225 @@ export function ProductForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-        <FormField
-          control={form.control}
-          name="images"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Images</FormLabel>
-              <FormControl>
-                {/* <ImageUpload
-                  value={field.value.map((image) => image.url)}
-                  disabled={loading}
-                  onChange={(url) => field.onChange([...field.value, { url }])}
-                  onRemove={(url) =>
-                    field.onChange([
-                      ...field.value.filter((current) => current.url !== url),
-                    ])
-                  }
-                /> */}
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="md:grid md:grid-cols-3 gap-8">
+    <>
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">Create product</h2>
+        <p className="text-sm text-muted-foreground">Add a new product</p>
+      </div>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 w-full"
+        >
           <FormField
             control={form.control}
-            name="name"
+            name="images"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Images</FormLabel>
                 <FormControl>
-                  <Input
+                  <ImageUpload
+                    value={field.value.map((image) => image.url)}
                     disabled={loading}
-                    placeholder="Product name"
-                    {...field}
+                    onChange={(url) =>
+                      field.onChange([...field.value, { url }])
+                    }
+                    onRemove={(url) =>
+                      field.onChange([
+                        ...field.value.filter((current) => current.url !== url),
+                      ])
+                    }
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Price</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
+          <div className="md:grid md:grid-cols-3 gap-8">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Product name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      disabled={loading}
+                      placeholder="9.99"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <Select
                     disabled={loading}
-                    placeholder="9.99"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="categoryId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category</FormLabel>
-                <Select
-                  disabled={loading}
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        defaultValue={field.value}
-                        placeholder="Select a category"
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {categories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="sizeId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Size</FormLabel>
-                <Select
-                  disabled={loading}
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        defaultValue={field.value}
-                        placeholder="Select a size"
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {sizes.map((size) => (
-                      <SelectItem key={size.id} value={size.id}>
-                        {size.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="colorId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Color</FormLabel>
-                <Select
-                  disabled={loading}
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        defaultValue={field.value}
-                        placeholder="Select a color"
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {colors.map((color) => (
-                      <SelectItem key={color.id} value={color.id}>
-                        {color.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Select a category"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="sizeId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Size</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Select a size"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {sizes.map((size) => (
+                        <SelectItem key={size.id} value={size.id}>
+                          {size.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="colorId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Color</FormLabel>
+                  <Select
+                    disabled={loading}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue
+                          defaultValue={field.value}
+                          placeholder="Select a color"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {colors.map((color) => (
+                        <SelectItem key={color.id} value={color.id}>
+                          {color.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          {/* Checkbox for accepting terms and conditions */}
-          <FormField
-            control={form.control}
-            name="isFeatured"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    // @ts-ignore
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Featured</FormLabel>
-                  <FormDescription>
-                    This product will appear on the home page
-                  </FormDescription>
-                </div>
-              </FormItem>
-            )}
-          />
+            {/* Checkbox for accepting terms and conditions */}
+            <FormField
+              control={form.control}
+              name="isFeatured"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      // @ts-ignore
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Featured</FormLabel>
+                    <FormDescription>
+                      This product will appear on the home page
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
 
-          {/* Checkbox for accepting terms and conditions */}
-          <FormField
-            control={form.control}
-            name="isArchived"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    // @ts-ignore
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Archived</FormLabel>
-                  <FormDescription>
-                    This product will not appear anywhere in the store.
-                  </FormDescription>
-                </div>
-              </FormItem>
-            )}
-          />
-        </div>
-        <Button disabled={loading} className="ml-auto" type="submit">
-          {/* {action} */}
-          Create
-        </Button>
-      </form>
-    </Form>
+            {/* Checkbox for accepting terms and conditions */}
+            <FormField
+              control={form.control}
+              name="isArchived"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      // @ts-ignore
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Archived</FormLabel>
+                    <FormDescription>
+                      This product will not appear anywhere in the store.
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
+          <Button disabled={loading} className="ml-auto" type="submit">
+            {/* {action} */}
+            Create
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }
