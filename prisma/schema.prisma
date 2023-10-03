@@ -12,12 +12,13 @@ datasource db {
 }
 
 model Store {
-  id    Int     @id @default(autoincrement())
+  id    String     @id @default(uuid())
   name  String
+  userId String
 }
 
 model Product {
-  id    Int     @id @default(autoincrement())
+  id    String     @id @default(uuid())
   name  String
   img String
 }
