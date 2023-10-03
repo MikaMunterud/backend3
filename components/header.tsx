@@ -6,9 +6,8 @@ import { UserButton } from '@clerk/nextjs';
 import axios from 'axios';
 interface HeaderProps {
   links: { label: string; href: string }[];
-  currentUrl: string;
 }
-export default function Header({ links, currentUrl }: HeaderProps) {
+export default function Header({ links }: HeaderProps) {
   const [stores, setStores] = React.useState([]);
 
   React.useEffect(function () {
@@ -25,7 +24,7 @@ export default function Header({ links, currentUrl }: HeaderProps) {
     <header className="border-b">
       <div className="flex h-16 items-center px-4">
         <StoreSwitcher stores={stores} />
-        <Navbar links={links} currentUrl={currentUrl} />
+        <Navbar links={links} />
         <div className="ml-auto flex items-center space-x-4">
           <ThemeToggle />
           <UserButton />
