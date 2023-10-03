@@ -1,7 +1,6 @@
 import prismadb from '@/lib/prismadb';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
-import { number } from 'zod';
 
 export async function GET(req: Request, { params }: { params: {productId: string }}) {
   try {
