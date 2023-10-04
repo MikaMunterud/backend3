@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
   try {
     const { userId } = auth();
-    const body = await req.json();
+    const body: { name: string} = await req.json();
 
     const { name } = body;
 
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       return new NextResponse('Name is required', { status: 400 });
     }
 
-    const store = await prismadb.store.create({ data: { name } });
+    const store = await prismadb.store.create({ data: { name, userId } });
 
     return NextResponse.json(store);
   } catch (error) {
