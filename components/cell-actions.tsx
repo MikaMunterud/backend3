@@ -56,7 +56,7 @@ export function CellAction({ route, id }: CellActionProps) {
   if (route === 'products') {
     title = 'Product';
     description =
-      'Make sure you removed all products using this category first.';
+      'Something went wrong, product was not deleted. Please try again.';
   }
 
   const onCopy = (id: string) => {
