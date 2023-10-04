@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -11,25 +13,26 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
+import { useParams } from 'next/navigation';
 import { Plus } from 'lucide-react';
+import { CellAction } from '@/components/cell-actions';
+import Heading from '@/components/ui/heading';
+import ApiList from '@/components/ui/api-list';
 
 export default function Products() {
   const productAmount: number = 2;
   const color = { backgroundColor: '#cecece' };
+  const params = useParams();
 
   return (
     <>
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">
-            Products ({productAmount})
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Manage products for your store
-          </p>
-        </div>
-        <Link href={`/products/new`}>
+        <Heading
+          title={`Products (${productAmount})`}
+          description="Manage products for your store"
+        />
+
+        <Link href={`/${params.storeId}/products/new`}>
           <Button>
             <Plus className="h-4 w-4" />
           </Button>
@@ -72,9 +75,7 @@ export default function Products() {
                 </TableCell>
                 <TableCell>September 28th, 2023</TableCell>
                 <TableCell>
-                  <Button className="h-8 w-8 p-0" variant="ghost">
-                    ...
-                  </Button>
+                  <CellAction route={'products'} id={'dataID'} />
                 </TableCell>
               </TableRow>
             </TableBody>
@@ -89,6 +90,9 @@ export default function Products() {
           </Button>
         </div>
       </div>
+      <Heading title="API Routes" description="Endpoints for products" />
+      <Separator />
+      <ApiList entityName="products" entityIdName="productId" />
     </>
   );
 }

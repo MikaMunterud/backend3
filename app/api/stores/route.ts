@@ -33,7 +33,7 @@ export async function GET(req: Request) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const stores = await prismadb.store.findMany({});
+    const stores = await prismadb.store.findMany({ where: { userId } });
 
     return NextResponse.json(stores);
   } catch (error) {

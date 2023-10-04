@@ -1,4 +1,6 @@
+import { CellAction } from '@/components/cell-actions';
 import { Button } from '@/components/ui/button';
+import Heading from '@/components/ui/heading';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -11,21 +13,17 @@ import {
 } from '@/components/ui/table';
 import { Plus } from 'lucide-react';
 
-export default function Colors() {
-  const colorsAmount: number = 1;
-  const color = { backgroundColor: '#cecece' };
+export default function Sizes() {
+  const sizesAmount: number = 1;
 
   return (
     <>
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">
-            Colors ({colorsAmount})
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Manage colors for your store
-          </p>
-        </div>
+        <Heading
+          title={`Sizes (${sizesAmount})`}
+          description="Manage sizes for your store"
+        />
+
         <Button>
           <Plus className="h-4 w-4" />
         </Button>
@@ -48,20 +46,10 @@ export default function Colors() {
             <TableBody>
               <TableRow>
                 <TableCell>Name</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-x-2">
-                    {color.backgroundColor}
-                    <div
-                      className="h-6 w-6 rounded-full border"
-                      style={color}
-                    ></div>
-                  </div>
-                </TableCell>
+                <TableCell>Value</TableCell>
                 <TableCell>September 28th, 2023</TableCell>
                 <TableCell>
-                  <Button className="h-8 w-8 p-0" variant="ghost">
-                    ...
-                  </Button>
+                  <CellAction route={'sizes'} id={'dataID'} />
                 </TableCell>
               </TableRow>
             </TableBody>
