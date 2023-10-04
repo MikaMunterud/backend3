@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/table';
 import { useParams } from 'next/navigation';
 import { Plus } from 'lucide-react';
+import { CellAction } from '@/components/cell-actions';
 
 export default function Products() {
   const productAmount: number = 2;
@@ -75,9 +76,7 @@ export default function Products() {
                 </TableCell>
                 <TableCell>September 28th, 2023</TableCell>
                 <TableCell>
-                  <Button className="h-8 w-8 p-0" variant="ghost">
-                    ...
-                  </Button>
+                  <CellAction route={'products'} id={'dataID'} />
                 </TableCell>
               </TableRow>
             </TableBody>
