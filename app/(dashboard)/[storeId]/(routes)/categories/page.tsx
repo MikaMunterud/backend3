@@ -1,5 +1,6 @@
 import { CellAction } from '@/components/cell-actions';
 import { Button } from '@/components/ui/button';
+import Heading from '@/components/ui/heading';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -18,14 +19,11 @@ export default function Categories() {
   return (
     <>
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">
-            Categories ({categoriesAmount})
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Manage categories for your store
-          </p>
-        </div>
+        <Heading
+          title={`Categories (${categoriesAmount})`}
+          description="Manage categories for your store"
+        />
+
         <Button>
           <Plus className="h-4 w-4" />
         </Button>

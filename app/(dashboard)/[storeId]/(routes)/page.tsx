@@ -1,6 +1,7 @@
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, CreditCard, Package } from 'lucide-react';
+import Heading from '@/components/ui/heading';
 
 export default function Dashboard() {
   const value1: string = 'Value 1';
@@ -9,10 +10,8 @@ export default function Dashboard() {
 
   return (
     <>
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-        <p className="text-sm text-muted-foreground">Overview of your store</p>
-      </div>
+      <Heading title="Dashboard" description="Overview of your store" />
+
       <Separator />
       <div className="grid gap-4 grid-cols-3">
         {/* Total Revenue */}

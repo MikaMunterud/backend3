@@ -1,5 +1,6 @@
 import { CellAction } from '@/components/cell-actions';
 import { Button } from '@/components/ui/button';
+import Heading from '@/components/ui/heading';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -19,14 +20,11 @@ export default function Colors() {
   return (
     <>
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">
-            Colors ({colorsAmount})
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Manage colors for your store
-          </p>
-        </div>
+        <Heading
+          title={`Colors (${colorsAmount})`}
+          description="Manage colors for your store"
+        />
+
         <Button>
           <Plus className="h-4 w-4" />
         </Button>
