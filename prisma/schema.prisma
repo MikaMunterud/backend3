@@ -15,10 +15,32 @@ model Store {
   id    String     @id @default(uuid())
   name  String
   userId String
+  products   Product[]   @relation("StoreToProduct")
 }
 
+
+
 model Product {
-  id    String     @id @default(uuid())
-  name  String
-  img String
+  id         String   @id @default(uuid())
+  name       String
+  img        String
+
+  storeId    String
+  store      Store    @relation("StoreToProduct", fields: [storeId], references: [id])
+  category  String
+  price      Decimal
+  isFeatured Boolean  @default(false)
+  isArchived Boolean  @default(false)
+  size     String
+  color    String
+    
+  @@index([storeId])
 }
+
+
+
+
+
+
+
+
