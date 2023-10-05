@@ -15,15 +15,21 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
+import { redirect, useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import axios from 'axios';
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Store name must be at least 2 characters.',
+  name: z.string().min(1, {
+    message: 'Store name must be at least 1 characters.',
   }),
 });
 
 export function SettingsForm() {
-  // 1. Define your form.
+  const [loading, setLoading] = useState(false);
+  const params = useParams();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,11 +37,20 @@ export function SettingsForm() {
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const name = values.name.trim();
+      setLoading(true);
+      await axios.patch(`/api/stores/${params.storeId}`, { name });
+      window.location.reload();
+      toast.success('Store name updated.');
+    } catch (error: any) {
+      toast.error(
+        'Something went wrong. Store name was not updated. Please try again.',
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -49,14 +64,16 @@ export function SettingsForm() {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Store name" {...field} />
+                  <Input placeholder="Update store name..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             </div>
           )}
         />
-        <Button type="submit">Save changes</Button>
+        <Button disabled={loading} type="submit">
+          Save changes
+        </Button>
       </form>
     </Form>
   );
