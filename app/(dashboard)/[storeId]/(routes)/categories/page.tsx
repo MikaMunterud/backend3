@@ -1,4 +1,5 @@
 import { CellAction } from '@/components/cell-actions';
+import ApiList from '@/components/ui/api-list';
 import { Button } from '@/components/ui/button';
 import Heading from '@/components/ui/heading';
 import { Input } from '@/components/ui/input';
@@ -64,6 +65,10 @@ export default function Categories() {
           </Button>
         </div>
       </div>
+
+      <Heading title="API Routes" description="Endpoints for categories" />
+      <Separator />
+      <ApiList entityName="categories" entityIdName="categoryId" />
     </>
   );
 }
