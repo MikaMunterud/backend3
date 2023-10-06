@@ -101,9 +101,18 @@ export async function POST(
   }
 }
 
-export async function GET(request: NextRequest, response: NextResponse) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { storeId: string } },
+) {
   try {
-    const result = await prismadb.product.findMany();
+    if (!params.storeId) {
+      return new NextResponse('StoreId is required', { status: 400 });
+    }
+
+    const result = await prismadb.product.findMany({
+      where: { storeId: params.storeId },
+    });
     return NextResponse.json({ status: 200, body: { result } });
   } catch (err) {
     return NextResponse.json({ status: 500, body: { err } });
