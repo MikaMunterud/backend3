@@ -1,6 +1,7 @@
 'use client';
 
 import { ApiAlert } from '@/components/ui/api-alert';
+import { useOrigin } from '@/hooks/use-origin';
 import { useParams } from 'next/navigation';
 
 interface ApiListProps {
@@ -10,7 +11,9 @@ interface ApiListProps {
 export default function ApiList({ entityName, entityIdName }: ApiListProps) {
   const params = useParams();
 
-  const baseUrl = `${window.location.origin}/api/${params.storeId}`;
+  const origin = useOrigin();
+
+  const baseUrl = `${origin}/api/${params.storeId}`;
 
   return (
     <>
