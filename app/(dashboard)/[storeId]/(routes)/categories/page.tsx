@@ -1,6 +1,7 @@
 'use client';
 
 import Heading from '@/components/ui/heading';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -41,9 +42,11 @@ export default function Categories() {
           description="Manage categories for your store"
         />
 
-        <Button>
-          <Plus className="h-4 w-4" />
-        </Button>
+        <Link href={`/${params.storeId}/categories/new`}>
+          <Button>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </Link>
       </div>
       <Separator />
 
