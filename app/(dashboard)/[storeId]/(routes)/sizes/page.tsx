@@ -1,6 +1,7 @@
 'use client';
 
 import Heading from '@/components/ui/heading';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -22,6 +23,8 @@ export default function Sizes() {
     function () {
       async function getSizes() {
         const response = await axios.get(`/api/${params.storeId}/sizes`);
+
+        //this might need to be changed depending on how the data is sent from the api route
         const data = await response.data.body.result;
 
         setSizes(data);
@@ -39,9 +42,11 @@ export default function Sizes() {
           description="Manage sizes for your store"
         />
 
-        <Button>
-          <Plus className="h-4 w-4" />
-        </Button>
+        <Link href={`/${params.storeId}/sizes/new`}>
+          <Button>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </Link>
       </div>
       <Separator />
 
