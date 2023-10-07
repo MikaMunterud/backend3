@@ -12,29 +12,84 @@ datasource db {
 }
 
 model Store {
-  id    String     @id @default(uuid())
-  name  String
-  userId String
-  products   Product[]   @relation("StoreToProduct")
+  id        String      @id @default(uuid())
+  name      String
+  userId    String
+  products  Product[]   @relation("Store-Product")
+  category  Category[]  @relation("Store-Category")
+  size      Size[]      @relation("Store-Size")
 }
 
-
-
 model Product {
-  id         String   @id @default(uuid())
+  id         String     @id @default(uuid())
   name       String
   img        String
-
   storeId    String
-  store      Store    @relation("StoreToProduct", fields: [storeId], references: [id])
-  category  String
+  store      Store      @relation("Store-Product", fields: [storeId], references: [id])
+  categoryId String
+  category   Category   @relation("Category-Product", fields: [categoryId], references: [id])
+  sizeId     String
+  size       Size       @relation("Size-Product", fields: [sizeId], references: [id])
+  colorId    String
   price      Decimal
-  isFeatured Boolean  @default(false)
-  isArchived Boolean  @default(false)
-  size     String
-  color    String
+  isFeatured Boolean    @default(false)
+  isArchived Boolean    @default(false)
+  created    DateTime   @default(now())
     
   @@index([storeId])
+  @@index([categoryId])
+  @@index([sizeId])
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  storeId     String
+  store       Store     @relation("Store-Category", fields: [storeId], references: [id])
+  billboardId String
+  products    Product[] @relation("Category-Product")
+
+  @@index([storeId])
+}
+
+model Size {
+  id       String      @id @default(uuid())
+  name     String
+  value    String
+  storeId  String
+  store    Store       @relation("Store-Size", fields: [storeId], references: [id])
+  products Product[]   @relation("Size-Product")
+
+  @@index([storeId])
+}
+
+model Color {
+  id        String      @id @default(uuid())
+  name      String
+  value     String
+  storeId   String
+}
+
+model Billboard {
+  id        String      @id @default(uuid())
+  name      String
+  img       String
+  storeId   String
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  adress    String
+  phone     Int
+  isPaid    Boolean
+  storeId   String
+  date      DateTime    @default(now())
+}
+
+model OrderItem {
+  id        String      @id @default(uuid())
+  orderId   String
+  productId String
 }
 
 
