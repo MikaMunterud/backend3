@@ -7,7 +7,6 @@ export type SizeColumn = {
   id: string;
   name: string;
   value: string;
-  //   createdAt: string;
 };
 
 export const columns: ColumnDef<SizeColumn>[] = [
@@ -19,11 +18,6 @@ export const columns: ColumnDef<SizeColumn>[] = [
     accessorKey: 'value',
     header: 'Value',
   },
-  /*   {
-    accessorKey: 'createdAt',
-    header: 'Date',
-  }, */
-
   {
     id: 'actions',
     cell: ({ row }) => <CellAction route={'sizes'} id={row.original.id} />,

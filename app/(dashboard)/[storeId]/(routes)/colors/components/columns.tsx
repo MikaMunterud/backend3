@@ -7,7 +7,6 @@ export type ColorColumn = {
   id: string;
   name: string;
   value: string;
-  //   createdAt: string;
 };
 
 export const columns: ColumnDef<ColorColumn>[] = [
@@ -28,11 +27,6 @@ export const columns: ColumnDef<ColorColumn>[] = [
       </div>
     ),
   },
-  /*   {
-    accessorKey: 'createdAt',
-    header: 'Date',
-  }, */
-
   {
     id: 'actions',
     cell: ({ row }) => <CellAction route={'sizes'} id={row.original.id} />,
