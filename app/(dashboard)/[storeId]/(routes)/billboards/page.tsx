@@ -51,7 +51,7 @@ export default function Billboards() {
       <Separator />
 
       <DataTable
-        searchKey="title"
+        searchKey="name"
         columns={columns}
         data={billboards}
         route="billboards"
