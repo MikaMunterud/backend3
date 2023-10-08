@@ -1,22 +1,23 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Button } from '@/components/ui/button';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+import { useForm } from 'react-hook-form';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useForm } from 'react-hook-form';
-import { redirect, useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
@@ -26,23 +27,34 @@ const formSchema = z.object({
   }),
 });
 
-export function SettingsForm() {
-  const [loading, setLoading] = useState(false);
-  const params = useParams();
+type SettingsFormValues = z.infer<typeof formSchema>;
 
-  const form = useForm<z.infer<typeof formSchema>>({
+interface SettingsFormProps {
+  initialData: { name: string } | null;
+}
+
+export default function SettingsForm({ initialData }: SettingsFormProps) {
+  const params = useParams();
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+
+  const form = useForm<SettingsFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-    },
+    defaultValues: initialData || { name: '' },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: SettingsFormValues) {
     try {
-      const name = values.name.trim();
       setLoading(true);
+
+      const name = values.name.trim();
+
       await axios.patch(`/api/stores/${params.storeId}`, { name });
-      window.location.reload();
+
+      router.refresh();
+      router.push(`/${params.storeId}/`);
+
       toast.success('Store name updated.');
     } catch (error: any) {
       toast.error(
@@ -54,27 +66,36 @@ export function SettingsForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <div className="grid grid-cols-3 gap-8">
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Update store name..." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            </div>
-          )}
-        />
-        <Button disabled={loading} type="submit">
-          Save changes
-        </Button>
-      </form>
-    </Form>
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 w-full"
+        >
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <div className="grid grid-cols-3 gap-8">
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Store name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </div>
+            )}
+          />
+          <Button disabled={loading} type="submit">
+            Save changes
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }
