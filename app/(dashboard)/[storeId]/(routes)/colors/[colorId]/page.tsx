@@ -7,7 +7,7 @@ import Heading from '@/components/ui/heading';
 import { Button } from '@/components/ui/button';
 import { Trash } from 'lucide-react';
 
-import { Separator } from '@radix-ui/react-dropdown-menu';
+import { Separator } from '@/components/ui/separator';
 
 import ColorForm from './components/color-form';
 
