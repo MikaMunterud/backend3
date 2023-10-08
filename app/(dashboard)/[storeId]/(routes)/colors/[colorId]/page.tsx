@@ -98,6 +98,7 @@ export default function ColorId() {
         onClose={() => setOpen(false)}
         onConfirm={onDelete}
         loading={loading}
+        type={'color'}
       />
 
       <div className="flex items-center justify-between">

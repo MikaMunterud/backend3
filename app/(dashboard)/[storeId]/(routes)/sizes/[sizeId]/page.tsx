@@ -98,6 +98,7 @@ export default function SizeId() {
         onClose={() => setOpen(false)}
         onConfirm={onDelete}
         loading={loading}
+        type={'size'}
       />
 
       <div className="flex items-center justify-between">

@@ -87,6 +87,7 @@ export default function Settings() {
         onClose={() => setOpen(false)}
         onConfirm={onDelete}
         loading={loading}
+        type={'store'}
       />
 
       <div className="flex items-center justify-between">

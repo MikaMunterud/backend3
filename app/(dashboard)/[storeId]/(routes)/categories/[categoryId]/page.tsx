@@ -121,6 +121,7 @@ export default function CategoryId() {
         onClose={() => setOpen(false)}
         onConfirm={onDelete}
         loading={loading}
+        type={'category'}
       />
 
       <div className="flex items-center justify-between">
