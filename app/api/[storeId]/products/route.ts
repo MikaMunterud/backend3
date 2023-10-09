@@ -46,14 +46,6 @@ export async function POST(request: Request,
             return NextResponse.json({ status: 400, body: { err: 'Price is required' } })
         }
 
-        if (!isFeatured) {
-            return NextResponse.json({ status: 400, body: { err: 'isFeautured is required' } })
-        }
-
-        if (!isArchived) {
-            return NextResponse.json({ status: 400, body: { err: 'isArchived is required' } })
-        }
-
         if (!sizeId) {
             return NextResponse.json({ status: 400, body: { err: 'SizeId is required' } })
         }
