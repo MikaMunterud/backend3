@@ -1,70 +1,49 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+'use client';
+
+import Heading from '@/components/ui/heading';
 import { Separator } from '@/components/ui/separator';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Plus } from 'lucide-react';
+
+import { OrderColumn, columns } from './components/columns';
+import { DataTable } from '@/components/ui/data-table';
+
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import axios from 'axios';
 
 export default function Orders() {
-  const ordersAmount: number = 0;
+  const [orders, setOrders] = useState<OrderColumn[]>([]);
+  const params = useParams();
+
+  useEffect(
+    function () {
+      async function getSizes() {
+        const response = await axios.get(`/api/${params.storeId}/orders`);
+
+        //this might need to be changed depending on how the data is sent from the api route
+        const data = await response.data.body.result;
+
+        setOrders(data);
+      }
+      getSizes();
+    },
+    [params.storeId],
+  );
 
   return (
     <>
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">
-            Orders ({ordersAmount})
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Manage orders for your store
-          </p>
-        </div>
-        <Button>
-          <Plus className="h-4 w-4" />
-        </Button>
-      </div>
+      <Heading
+        title={`Orders (${orders.length})`}
+        description={'Manage orders för your store'}
+      />
+
       <Separator />
-      <div>
-        <div className="flex items-center py-4">
-          <Input className="max-w-sm" placeholder="Search" />
-        </div>
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Products</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Address</TableHead>
-                <TableHead>Total Price</TableHead>
-                <TableHead>Paid</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Products</TableCell>
-                <TableCell>Phone</TableCell>
-                <TableCell>Address</TableCell>
-                <TableCell>Total Price</TableCell>
-                <TableCell>Paid</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <Button className="h-10  px-4 py-2" variant="outline" disabled>
-            Previous
-          </Button>
-          <Button className="h-10  px-4 py-2" variant="outline" disabled>
-            Next
-          </Button>
-        </div>
-      </div>
+
+      <DataTable
+        searchKey="products"
+        columns={columns}
+        data={orders}
+        route="orders"
+      />
     </>
   );
 }

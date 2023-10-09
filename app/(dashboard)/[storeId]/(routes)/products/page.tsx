@@ -1,19 +1,19 @@
 'use client';
 
+import Heading from '@/components/ui/heading';
 import Link from 'next/link';
-
 import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
-import { useParams } from 'next/navigation';
-import { Plus } from 'lucide-react';
-import Heading from '@/components/ui/heading';
-import ApiList from '@/components/ui/api-list';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { ProductColumn, columns } from './components/columns';
 import { DataTable } from '@/components/ui/data-table';
 
-import { ProductColumn, columns } from './components/columns';
+import ApiList from '@/components/ui/api-list';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import axios from 'axios';
 
 export default function Products() {
   const params = useParams();

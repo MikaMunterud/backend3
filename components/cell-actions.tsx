@@ -85,6 +85,7 @@ export function CellAction({ route, id }: CellActionProps) {
         onClose={() => setOpen(false)}
         onConfirm={onDelete}
         loading={loading}
+        type={title}
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
