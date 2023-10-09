@@ -6,7 +6,7 @@ import { string } from 'zod';
 export async function POST(req: Request,
   { params }: { params: { storeId: string }}) {
   try {
-    const { userId } = auth()
+    //const { userId } = auth()
     const { storeId } = params;
     interface Body {
       name: string;
