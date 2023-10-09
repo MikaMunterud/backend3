@@ -1,10 +1,10 @@
 'use client';
 
-import * as React from 'react';
-import { Check, ChevronsUpDown, PlusCircle } from 'lucide-react';
-
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import {
   Command,
   CommandEmpty,
@@ -13,29 +13,60 @@ import {
   CommandItem,
   CommandSeparator,
 } from '@/components/ui/command';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Check, ChevronsUpDown, PlusCircle, Store } from 'lucide-react';
 
-import { Store } from 'lucide-react';
 import { useModalStore } from '@/hooks/use-store-modal';
-import { useParams, useRouter } from 'next/navigation';
-interface StoreSwitcherProps {
-  stores: { name: string; id: string }[];
-}
+import { useRouter, useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-export function StoreSwitcher({ stores }: StoreSwitcherProps) {
-  const [open, setOpen] = React.useState(false);
+type StoreSwitcherType = {
+  name: string;
+  id: string;
+};
+
+export default function StoreSwitcher() {
+  const router = useRouter();
+  const params = useParams();
+
+  const [open, setOpen] = useState(false);
   const { onOpen } = useModalStore();
 
-  const params = useParams();
-  const router = useRouter();
-
-  const currentStore = stores.find(function (store) {
-    return store.id == params.storeId;
+  const [stores, setStores] = useState<StoreSwitcherType[]>([]);
+  const [currentStore, setCurrentStore] = useState<StoreSwitcherType>({
+    id: '',
+    name: 'Loading...',
   });
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(
+    function () {
+      async function getStores() {
+        try {
+          const response = await axios.get('/api/stores');
+          const data = await response.data;
+
+          setStores(data);
+
+          const currentStore = data.find(function (store: {
+            id: string;
+            name: string;
+          }) {
+            return store.id == params.storeId;
+          });
+
+          setCurrentStore(currentStore);
+        } catch (error) {
+        } finally {
+          setMounted(true);
+        }
+      }
+      getStores();
+    },
+    [params.storeId],
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -47,7 +78,7 @@ export function StoreSwitcher({ stores }: StoreSwitcherProps) {
           className="w-[200px] justify-between"
         >
           <Store className="mr-2 h-4 w-4" />
-          {currentStore?.name}
+          {mounted ? currentStore?.name : 'Loading...'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -66,10 +97,9 @@ export function StoreSwitcher({ stores }: StoreSwitcherProps) {
               >
                 <Store className="mr-2 h-4 w-4" />
                 <Check
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    currentStore?.id === store.id ? 'opacity-100' : 'opacity-0',
-                  )}
+                  className={`mr-2 h-4 w-4 ${
+                    currentStore?.id === store.id ? 'opacity-100' : 'opacity-0'
+                  } `}
                 />
                 {store.name}
               </CommandItem>
