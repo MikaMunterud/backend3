@@ -61,3 +61,40 @@ export async function DELETE(
     return new Response('Internal Server Error', { status: 500 });
   }
 }
+
+export async function GET(
+  req: Request,
+  { params }: { params: { storeId: string } },
+) {
+  try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return new NextResponse('Not authorized', { status: 401 });
+    }
+
+    const { storeId } = params;
+
+    if (!params.storeId) {
+      return new Response('Missing storeId', { status: 400 });
+    }
+
+    const result = await prismadb.store.findFirst({
+      where: {
+        id: storeId,
+        userId,
+      },
+      select: {
+        name: true,
+      },
+    });
+
+    if (result === null) {
+      return new NextResponse('No store found', { status: 404 });
+    }
+
+    return NextResponse.json(result, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 500 });
+  }
+}
