@@ -1,70 +1,60 @@
-import { CellAction } from '@/components/cell-actions';
-import ApiList from '@/components/ui/api-list';
-import { Button } from '@/components/ui/button';
-import Heading from '@/components/ui/heading';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Plus } from 'lucide-react';
+"use client";
+
+import { Button } from "@/components/ui/button";
+import Heading from "@/components/ui/heading";
+import { Separator } from "@/components/ui/separator";
+import { DataTable } from "@/components/ui/data-table";
+import { Plus } from "lucide-react";
+import { columns } from "./components/columns";
+import { CategoryColumn } from "./components/columns";
+import ApiList from "@/components/ui/api-list";
+
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import Link from "next/link";
+import axios from "axios";
 
 export default function Categories() {
-  const categoriesAmount: number = 1;
+  const [categories, setCategories] = useState<CategoryColumn[]>([]);
+  const params = useParams();
+
+  useEffect(
+    function () {
+      async function getCategories() {
+        const response = await axios.get(`/api/${params.storeId}/categories`);
+
+        const data = await response.data.body.categories;
+
+        setCategories(data);
+      }
+      getCategories();
+    },
+    [params.storeId]
+  );
 
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Categories (${categoriesAmount})`}
+          title={`Categories (${categories.length})`}
           description="Manage categories for your store"
         />
 
-        <Button>
-          <Plus className="h-4 w-4" />
-        </Button>
+        <Link href={`/${params.storeId}/categories/new`}>
+          <Button>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </Link>
       </div>
       <Separator />
-      <div>
-        <div className="flex items-center py-4">
-          <Input className="max-w-sm" placeholder="Search" />
-        </div>
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Billboard</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Billboard</TableCell>
-                <TableCell>September 28th, 2023</TableCell>
-                <TableCell>
-                  <CellAction route={'categories'} id={'dataID'} />
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <Button className="h-10  px-4 py-2" variant="outline" disabled>
-            Previous
-          </Button>
-          <Button className="h-10  px-4 py-2" variant="outline" disabled>
-            Next
-          </Button>
-        </div>
-      </div>
+
+      <DataTable
+        searchKey="name"
+        columns={columns}
+        data={categories}
+        route="categories"
+      />
 
       <Heading title="API Routes" description="Endpoints for categories" />
       <Separator />
