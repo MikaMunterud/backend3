@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import Heading from '@/components/ui/heading';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import Heading from "@/components/ui/heading";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
-import { ProductColumn, columns } from './components/columns';
-import { DataTable } from '@/components/ui/data-table';
+import { ProductColumn, columns } from "./components/columns";
+import { DataTable } from "@/components/ui/data-table";
 
-import ApiList from '@/components/ui/api-list';
+import ApiList from "@/components/ui/api-list";
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import axios from "axios";
 
 export default function Products() {
   const params = useParams();
@@ -23,13 +23,13 @@ export default function Products() {
     function () {
       async function getProducts() {
         const response = await axios.get(`/api/${params.storeId}/products`);
-        const data = await response.data.body.result;
+        const data = await response.data.body.products;
 
         setProducts(data);
       }
       getProducts();
     },
-    [params.storeId],
+    [params.storeId]
   );
 
   return (
