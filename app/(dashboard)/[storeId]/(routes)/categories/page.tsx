@@ -14,18 +14,29 @@ import { useEffect, useState } from 'react';
 
 import Link from 'next/link';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import { set } from 'date-fns';
 
 export default function Categories() {
   const [categories, setCategories] = useState<CategoryColumn[]>([]);
+  const [loading, setLoading] = useState(true);
   const params = useParams();
 
   useEffect(
     function () {
       async function getCategories() {
-        const response = await axios.get(`/api/${params.storeId}/categories`);
-        const data = await response.data;
+        try {
+          const response = await axios.get(`/api/${params.storeId}/categories`);
+          const data = await response.data;
 
-        setCategories(data);
+          setCategories(data);
+        } catch (error) {
+          toast.error(
+            'Something went wrong. Could not connect to server. Please try again',
+          );
+        } finally {
+          setLoading(false);
+        }
       }
       getCategories();
     },
@@ -53,6 +64,7 @@ export default function Categories() {
         columns={columns}
         data={categories}
         route="categories"
+        loading={loading}
       />
 
       <Heading title="API Routes" description="Endpoints for categories" />
