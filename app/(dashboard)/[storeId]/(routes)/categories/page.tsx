@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import Heading from "@/components/ui/heading";
-import { Separator } from "@/components/ui/separator";
-import { DataTable } from "@/components/ui/data-table";
-import { Plus } from "lucide-react";
-import { columns } from "./components/columns";
-import { CategoryColumn } from "./components/columns";
-import ApiList from "@/components/ui/api-list";
+import { Button } from '@/components/ui/button';
+import Heading from '@/components/ui/heading';
+import { Separator } from '@/components/ui/separator';
+import { DataTable } from '@/components/ui/data-table';
+import { Plus } from 'lucide-react';
+import { columns } from './components/columns';
+import { CategoryColumn } from './components/columns';
+import ApiList from '@/components/ui/api-list';
 
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import Link from "next/link";
-import axios from "axios";
+import Link from 'next/link';
+import axios from 'axios';
 
 export default function Categories() {
   const [categories, setCategories] = useState<CategoryColumn[]>([]);
@@ -23,14 +23,13 @@ export default function Categories() {
     function () {
       async function getCategories() {
         const response = await axios.get(`/api/${params.storeId}/categories`);
-
-        const data = await response.data.body.categories;
+        const data = await response.data;
 
         setCategories(data);
       }
       getCategories();
     },
-    [params.storeId]
+    [params.storeId],
   );
 
   return (
