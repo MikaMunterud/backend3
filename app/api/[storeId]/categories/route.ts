@@ -25,9 +25,18 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(
+  request: Request,
+  { params }: { params: { storeId: string } }
+) {
   try {
-    const categories = await prismadb.category.findMany();
+    const { storeId } = params;
+
+    const categories = await prismadb.category.findMany({
+      where: {
+        storeId,
+      },
+    });
     return NextResponse.json({ status: 200, body: { categories } });
   } catch (err) {
     if (err instanceof PrismaClientValidationError) {
