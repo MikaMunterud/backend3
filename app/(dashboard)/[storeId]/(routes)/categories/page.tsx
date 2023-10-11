@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import Heading from '@/components/ui/heading';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import { Button } from "@/components/ui/button";
+import Heading from "@/components/ui/heading";
+import { Separator } from "@/components/ui/separator";
+import { DataTable } from "@/components/ui/data-table";
+import { Plus } from "lucide-react";
+import { columns } from "./components/columns";
+import { CategoryColumn } from "./components/columns";
+import ApiList from "@/components/ui/api-list";
 
-import { CategoryColumn, columns } from './components/columns';
-import { DataTable } from '@/components/ui/data-table';
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import ApiList from '@/components/ui/api-list';
-
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import axios from 'axios';
+import Link from "next/link";
+import axios from "axios";
 
 export default function Categories() {
   const [categories, setCategories] = useState<CategoryColumn[]>([]);
@@ -21,17 +21,16 @@ export default function Categories() {
 
   useEffect(
     function () {
-      async function getSizes() {
+      async function getCategories() {
         const response = await axios.get(`/api/${params.storeId}/categories`);
 
-        //this might need to be changed depending on how the data is sent from the api route
-        const data = await response.data.body.result;
+        const data = await response.data.body.categories;
 
         setCategories(data);
       }
-      getSizes();
+      getCategories();
     },
-    [params.storeId],
+    [params.storeId]
   );
 
   return (
