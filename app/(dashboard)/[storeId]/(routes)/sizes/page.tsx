@@ -14,20 +14,30 @@ import ApiList from '@/components/ui/api-list';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function Sizes() {
   const [sizes, setSizes] = useState<SizeColumn[]>([]);
+  const [loading, setLoading] = useState(true);
   const params = useParams();
 
   useEffect(
     function () {
       async function getSizes() {
-        const response = await axios.get(`/api/${params.storeId}/sizes`);
+        try {
+          const response = await axios.get(`/api/${params.storeId}/sizes`);
 
-        //this might need to be changed depending on how the data is sent from the api route
-        const data = await response.data.body.result;
+          //this might need to be changed depending on how the data is sent from the api route
+          const data = await response.data.body.result;
 
-        setSizes(data);
+          setSizes(data);
+        } catch (error) {
+          toast.error(
+            'Something went wrong. Could not connect to server. Please try again',
+          );
+        } finally {
+          setLoading(false);
+        }
       }
       getSizes();
     },
@@ -55,6 +65,7 @@ export default function Sizes() {
         columns={columns}
         data={sizes}
         route="sizes"
+        loading={loading}
       />
 
       <Heading title="API Routes" description="Endpoints for sizes" />

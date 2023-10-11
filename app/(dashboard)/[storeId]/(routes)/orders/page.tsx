@@ -9,20 +9,30 @@ import { DataTable } from '@/components/ui/data-table';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function Orders() {
   const [orders, setOrders] = useState<OrderColumn[]>([]);
+  const [loading, setLoading] = useState(true);
   const params = useParams();
 
   useEffect(
     function () {
       async function getSizes() {
-        const response = await axios.get(`/api/${params.storeId}/orders`);
+        try {
+          const response = await axios.get(`/api/${params.storeId}/orders`);
 
-        //this might need to be changed depending on how the data is sent from the api route
-        const data = await response.data.body.result;
+          //this might need to be changed depending on how the data is sent from the api route
+          const data = await response.data.body.result;
 
-        setOrders(data);
+          setOrders(data);
+        } catch (error) {
+          toast.error(
+            'Something went wrong. Could not connect to server. Please try again',
+          );
+        } finally {
+          setLoading(false);
+        }
       }
       getSizes();
     },
@@ -43,6 +53,7 @@ export default function Orders() {
         columns={columns}
         data={orders}
         route="orders"
+        loading={loading}
       />
     </>
   );

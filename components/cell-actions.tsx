@@ -69,7 +69,8 @@ export function CellAction({ route, id }: CellActionProps) {
       setLoading(true);
       await axios.delete(`/api/${params.storeId}/${route}/${id}`);
       router.refresh();
-      toast.success(`${route} deleted.`);
+
+      toast.success(`${title} deleted.`);
     } catch (error) {
       toast.error(description);
     } finally {

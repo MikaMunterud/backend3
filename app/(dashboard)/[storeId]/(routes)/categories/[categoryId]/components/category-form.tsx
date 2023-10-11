@@ -42,7 +42,7 @@ type CategoryFormValues = z.infer<typeof formSchema>;
 
 interface CategoryFormProps {
   initialData: { id: string; name: string; billboardId: string } | null;
-  billboards: { id: string; title: string }[] | [];
+  billboards: { id: string; name: string }[] | [];
 }
 
 export default function CategoryForm({
@@ -52,11 +52,20 @@ export default function CategoryForm({
   const params = useParams();
   const router = useRouter();
 
+  let defaultValues;
+
   const [loading, setLoading] = useState(false);
+
+  if (initialData) {
+    defaultValues = {
+      name: initialData.name,
+      billboardId: initialData.billboardId,
+    };
+  }
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+    defaultValues: defaultValues || {
       name: '',
       billboardId: '',
     },
@@ -136,7 +145,7 @@ export default function CategoryForm({
                       {billboards.map(function (billboard) {
                         return (
                           <SelectItem key={billboard.id} value={billboard.id}>
-                            {billboard.title}
+                            {billboard.name}
                           </SelectItem>
                         );
                       })}

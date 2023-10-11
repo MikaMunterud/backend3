@@ -14,20 +14,30 @@ import ApiList from '@/components/ui/api-list';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function Billboards() {
   const [billboards, setBillboards] = useState<BillboardColumn[]>([]);
+  const [loading, setLoading] = useState(true);
   const params = useParams();
 
   useEffect(
     function () {
       async function getSizes() {
-        const response = await axios.get(`/api/${params.storeId}/billboards`);
+        try {
+          const response = await axios.get(`/api/${params.storeId}/billboards`);
 
-        //this might need to be changed depending on how the data is sent from the api route
-        const data = await response.data.body.result;
+          //this might need to be changed depending on how the data is sent from the api route
+          const data = await response.data.body.result;
 
-        setBillboards(data);
+          setBillboards(data);
+        } catch (error) {
+          toast.error(
+            'Something went wrong. Could not connect to server. Please try again',
+          );
+        } finally {
+          setLoading(false);
+        }
       }
       getSizes();
     },
@@ -55,6 +65,7 @@ export default function Billboards() {
         columns={columns}
         data={billboards}
         route="billboards"
+        loading={loading}
       />
 
       <Heading title="API Routes" description="Endpoints for billboards" />
