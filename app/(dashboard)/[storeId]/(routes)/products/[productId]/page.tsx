@@ -59,17 +59,25 @@ import axios from 'axios'; // Import Axios
 
 import { ProductForm } from './components/product-form';
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Heading from '@/components/ui/heading';
+import { AlertModal } from '@/components/modals/alert-modal';
+
+import { Trash } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import toast from 'react-hot-toast';
+import { Separator } from '@/components/ui/separator';
 
 const ProductPage = () => {
-  const apiUrl = '/api/products';
   const [productData, setProductData] = useState(null);
   const [categories, setCategories] = useState([]);
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [mounted, setMounted] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const params = useParams();
+  const router = useRouter();
 
   const newProduct = params.productId === 'new';
 
@@ -79,9 +87,15 @@ const ProductPage = () => {
     async function fetchData() {
       try {
         // Fetch product data
-        const productResponse = await axios.get(apiUrl);
-        const product = await productResponse.data;
-        setProductData(product);
+        if (!newProduct) {
+          const productResponse = await axios.get(
+            `/api/${params.storeId}/products/${params.productId}`,
+          );
+          const product = await productResponse.data;
+          setProductData(product);
+        } else {
+          setProductData(null);
+        }
 
         // Fetch categories, colors, and sizes
         const categoriesResponse = await axios.get(
@@ -103,7 +117,24 @@ const ProductPage = () => {
         setMounted(true);
       }
     }
-  }, [params.storeId]);
+  }, [params.storeId, params.productId, newProduct]);
+
+  async function onDelete() {
+    try {
+      setLoading(true);
+      await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
+      router.refresh();
+      router.push(`/${params.storeId}/products`);
+      toast.success('Product deleted.');
+    } catch (error: any) {
+      toast.error(
+        'Something went wrong. Product not deleted. Please try again.',
+      );
+    } finally {
+      setLoading(false);
+      setOpen(false);
+    }
+  }
 
   if (!mounted) {
     return (
@@ -119,16 +150,44 @@ const ProductPage = () => {
   }
 
   return (
-    <div className="flex-col">
-      <div className="flex-1 space-y-4 p-8 pt-6">
-        <ProductForm
-          categories={categories}
-          colors={colors}
-          sizes={sizes}
-          initialData={productData}
+    <>
+      <AlertModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={onDelete}
+        loading={loading}
+        type={'product'}
+      />
+
+      <div className="flex items-center justify-between">
+        <Heading
+          title={newProduct ? 'Create product' : 'Edit product'}
+          description={
+            newProduct
+              ? 'Add a new product for your store'
+              : 'Edit your product'
+          }
         />
+        {newProduct ? null : (
+          <Button
+            disabled={loading}
+            variant="destructive"
+            onClick={() => setOpen(true)}
+          >
+            <Trash className="h-4 w-4" />
+          </Button>
+        )}
       </div>
-    </div>
+
+      <Separator />
+
+      <ProductForm
+        categories={categories}
+        colors={colors}
+        sizes={sizes}
+        initialData={productData}
+      />
+    </>
   );
 };
 
