@@ -6,12 +6,13 @@ import { ColumnDef } from '@tanstack/react-table';
 export type ProductColumn = {
   id: string;
   name: string;
-  price: string;
+  price: number;
   category: string;
   size: string;
   color: string;
   isFeatured: boolean;
   isArchived: boolean;
+  createdAt: string;
 };
 
 export const columns: ColumnDef<ProductColumn>[] = [
