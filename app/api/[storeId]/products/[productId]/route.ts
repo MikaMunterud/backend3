@@ -62,9 +62,28 @@ export async function PATCH(
 ) {
   try {
     /*  const { userId } = auth(); */
-    const body = await req.json();
 
-    const { name, img } = body;
+    interface Body {
+      name: string;
+      images: string;
+      categoryId: string;
+      price: number;
+      isFeatured: boolean;
+      isArchived: boolean;
+      sizeId: string;
+      colorId: string;
+    }
+
+    const {
+      name,
+      images,
+      categoryId,
+      price,
+      isFeatured,
+      isArchived,
+      sizeId,
+      colorId,
+    }: Body = await req.json();
 
     /*     if(!userId) {
       return new NextResponse('Not authorized', { status: 401 })
@@ -77,8 +96,14 @@ export async function PATCH(
     const result = await prismadb.product.update({
       where: { id: params.productId },
       data: {
-        name: name,
-        img: img,
+        name,
+        images,
+        categoryId,
+        price,
+        isFeatured,
+        isArchived,
+        sizeId,
+        colorId,
       },
     });
     return NextResponse.json(result, { status: 200 });
