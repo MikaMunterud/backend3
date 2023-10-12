@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -25,25 +24,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import ImageUpload from '@/components/ui/image-upload';
-
-// Example data for the form.
-const sizes = [
-  { id: '1', name: 'Small' },
-  { id: '2', name: 'Medium' },
-  { id: '3', name: 'Large' },
-];
-
-const categories = [
-  { id: '1', name: 'Category 1' },
-  { id: '2', name: 'Category 2' },
-  { id: '3', name: 'Category 3' },
-];
-
-const colors = [
-  { id: '1', name: 'Red' },
-  { id: '2', name: 'Blue' },
-  { id: '3', name: 'Green' },
-];
+import { useState } from 'react';
 
 // Define the form schema. This will be used to validate the form values.
 const formSchema = z.object({
@@ -57,7 +38,26 @@ const formSchema = z.object({
   isArchived: z.boolean().default(false).optional(),
 });
 
-export function ProductForm() {
+interface ProductFormProps {
+  categories:
+    | {
+        id: string;
+        name: string;
+        storeId: string;
+        billboardId: string;
+      }[]
+    | [];
+  colors: { id: string; name: string; storeId: string; value: string }[] | [];
+  sizes: { id: string; name: string; storeId: string; value: string }[] | [];
+  initialData?: {} | null;
+}
+
+export function ProductForm({
+  categories,
+  colors,
+  sizes,
+  initialData,
+}: ProductFormProps) {
   const [loading, setLoading] = useState(false);
 
   // 1. Define your form.
@@ -204,7 +204,7 @@ export function ProductForm() {
                     <SelectContent>
                       {sizes.map((size) => (
                         <SelectItem key={size.id} value={size.id}>
-                          {size.name}
+                          {`${size.value}, ${size.name}`}
                         </SelectItem>
                       ))}
                     </SelectContent>
