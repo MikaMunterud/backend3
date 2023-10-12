@@ -29,6 +29,6 @@ export const columns: ColumnDef<ColorColumn>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => <CellAction route={'sizes'} id={row.original.id} />,
+    cell: ({ row }) => <CellAction route={'colors'} id={row.original.id} />,
   },
 ];
