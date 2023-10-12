@@ -55,75 +55,76 @@
 // ========================
 'use client';
 
-import prismadb from '@/lib/prismadb';
 import axios from 'axios'; // Import Axios
 
 import { ProductForm } from './components/product-form';
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import Heading from '@/components/ui/heading';
 
-const ProductPage = ({
-  params,
-}: {
-  params: { productId: string; storeId: string };
-}) => {
+const ProductPage = () => {
   const apiUrl = '/api/products';
   const [productData, setProductData] = useState(null);
-  const [categories, setCategories] = useState(null);
-  const [colors, setColors] = useState(null);
-  const [sizes, setSizes] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [sizes, setSizes] = useState([]);
+  const [mounted, setMounted] = useState(false);
+  const params = useParams();
 
-  const mockCategories = [
-    { id: '1', name: 'Electronics' },
-    { id: '2', name: 'Clothing' },
-    { id: '3', name: 'Home Decor' },
-  ];
-
-  const mockSizes = [
-    { id: '1', name: 'Small' },
-    { id: '2', name: 'Medium' },
-    { id: '3', name: 'Large' },
-  ];
-
-  const mockColors = [
-    { id: '1', name: 'Red' },
-    { id: '2', name: 'Blue' },
-    { id: '3', name: 'Green' },
-  ];
-
-  const fetchData = async () => {
-    try {
-      // Fetch product data
-      const productResponse = await axios.get(apiUrl);
-      setProductData(productResponse.data.result);
-
-      // Fetch categories, colors, and sizes
-      const categoriesResponse = await axios.get('/api/categories');
-      setCategories(categoriesResponse.data);
-
-      const colorsResponse = await axios.get('/api/colors');
-      setColors(colorsResponse.data);
-
-      const sizesResponse = await axios.get('/api/sizes');
-      setSizes(sizesResponse.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+  const newProduct = params.productId === 'new';
 
   useEffect(() => {
     fetchData();
-  }, []);
+
+    async function fetchData() {
+      try {
+        // Fetch product data
+        const productResponse = await axios.get(apiUrl);
+        const product = await productResponse.data;
+        setProductData(product);
+
+        // Fetch categories, colors, and sizes
+        const categoriesResponse = await axios.get(
+          `/api/${params.storeId}/categories`,
+        );
+        const categories = await categoriesResponse.data;
+        setCategories(categories);
+
+        const colorsResponse = await axios.get(`/api/${params.storeId}/colors`);
+        const colors = await colorsResponse.data;
+        setColors(colors);
+
+        const sizesResponse = await axios.get(`/api/${params.storeId}/sizes`);
+        const sizes = await sizesResponse.data.body.result;
+        setSizes(sizes);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setMounted(true);
+      }
+    }
+  }, [params.storeId]);
+
+  if (!mounted) {
+    return (
+      <Heading
+        title="Loading"
+        description={
+          newProduct
+            ? 'Loading product form....'
+            : 'Getting initial product information...'
+        }
+      />
+    );
+  }
 
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <ProductForm
-          categories={mockCategories}
-          sizes={mockSizes}
-          colors={mockColors}
-          // categories={categories}
-          // colors={colors}
-          // sizes={sizes}
+          categories={categories}
+          colors={colors}
+          sizes={sizes}
           initialData={productData}
         />
       </div>
