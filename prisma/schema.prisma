@@ -23,7 +23,7 @@ model Store {
 model Product {
   id         String     @id @default(uuid())
   name       String
-  img        String
+  images     String
   storeId    String
   store      Store      @relation("Store-Product", fields: [storeId], references: [id])
   categoryId String
@@ -31,7 +31,7 @@ model Product {
   sizeId     String
   size       Size       @relation("Size-Product", fields: [sizeId], references: [id])
   colorId    String
-  price      Decimal
+  price      Float
   isFeatured Boolean    @default(false)
   isArchived Boolean    @default(false)
   created    DateTime   @default(now())

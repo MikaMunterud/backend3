@@ -2,7 +2,6 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -25,31 +24,20 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import ImageUpload from '@/components/ui/image-upload';
-
-// Example data for the form.
-const sizes = [
-  { id: '1', name: 'Small' },
-  { id: '2', name: 'Medium' },
-  { id: '3', name: 'Large' },
-];
-
-const categories = [
-  { id: '1', name: 'Category 1' },
-  { id: '2', name: 'Category 2' },
-  { id: '3', name: 'Category 3' },
-];
-
-const colors = [
-  { id: '1', name: 'Red' },
-  { id: '2', name: 'Blue' },
-  { id: '3', name: 'Green' },
-];
+import { useState } from 'react';
+import { Category, Color, Product, Size } from '@/types';
+import { useParams, useRouter } from 'next/navigation';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 // Define the form schema. This will be used to validate the form values.
 const formSchema = z.object({
   name: z.string().min(1),
-  images: z.object({ url: z.string() }).array(),
-  price: z.coerce.number().min(1),
+  images: z
+    .object({ url: z.string() })
+    .array()
+    .max(1, { message: 'Only one image is allowed.' }),
+  price: z.coerce.number().min(0.1),
   categoryId: z.string().min(1),
   colorId: z.string().min(1),
   sizeId: z.string().min(1),
@@ -57,33 +45,94 @@ const formSchema = z.object({
   isArchived: z.boolean().default(false).optional(),
 });
 
-export function ProductForm() {
+type ProductFormValues = z.infer<typeof formSchema>;
+
+interface ProductFormProps {
+  categories: Category[] | [];
+  colors: Color[] | [];
+  sizes: Size[] | [];
+  initialData: Product | null;
+}
+
+export function ProductForm({
+  categories,
+  colors,
+  sizes,
+  initialData,
+}: ProductFormProps) {
   const [loading, setLoading] = useState(false);
+  const params = useParams();
+  const router = useRouter();
+
+  let defaultValues;
+
+  if (initialData) {
+    defaultValues = {
+      name: initialData.name,
+      images: [{ url: initialData.images }], //this uses only the first image of a product
+      price: initialData.price,
+      categoryId: initialData.categoryId,
+      colorId: initialData.colorId,
+      sizeId: initialData.sizeId,
+      isFeatured: initialData.isFeatured,
+      isArchived: initialData.isArchived,
+    };
+  }
 
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      sizeId: '',
-      categoryId: '',
-      colorId: '', // Add the colorId field
+    defaultValues: defaultValues || {
+      name: '',
       images: [],
+      categoryId: '',
+      colorId: '',
+      sizeId: '',
+      isFeatured: false,
+      isArchived: false,
     },
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: ProductFormValues) {
+    //this uses only the first image of a product
+    const product = {
+      name: values.name,
+      images: values.images[0].url,
+      price: values.price,
+      categoryId: values.categoryId,
+      colorId: values.colorId,
+      sizeId: values.sizeId,
+      isFeatured: values.isFeatured,
+      isArchived: values.isArchived,
+    };
+
+    try {
+      setLoading(true);
+      if (initialData) {
+        await axios.patch(
+          `/api/${params.storeId}/products/${params.productId}`,
+          product,
+        );
+
+        toast.success('Product updated.');
+      } else {
+        await axios.post(`/api/${params.storeId}/products`, product);
+        toast.success('Product created.');
+      }
+      router.refresh();
+      router.push(`/${params.storeId}/products`);
+    } catch (error: any) {
+      toast.error(
+        'Something went wrong. Product not updated. Please try again.',
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <>
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">Create product</h2>
-        <p className="text-sm text-muted-foreground">Add a new product</p>
-      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -204,7 +253,7 @@ export function ProductForm() {
                     <SelectContent>
                       {sizes.map((size) => (
                         <SelectItem key={size.id} value={size.id}>
-                          {size.name}
+                          {`${size.value}, ${size.name}`}
                         </SelectItem>
                       ))}
                     </SelectContent>
