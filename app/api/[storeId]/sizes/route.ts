@@ -1,7 +1,6 @@
 import prismadb from '@/lib/prismadb';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
-import { string } from 'zod';
 
 export async function POST(req: Request,
   { params }: { params: { storeId: string }}) {
@@ -38,9 +37,30 @@ export async function POST(req: Request,
   } catch (error) {
     return NextResponse.json({error}, {status: 500});
   }
-  
-
-
 }
 
-export async function GET() {}
+export async function GET(req: Request, { params }: { params: { storeId: string }}) {
+    try {
+      //const { userId } = auth()
+      const { storeId } = params;
+
+    // if (!userId) {
+    //   return NextResponse.json({ body: {error: 'Not authorized'}, status: 401 })
+    // }
+    if (!storeId) {
+      return NextResponse.json({error: 'StoreId is required'}, {status: 400})
+    }
+
+    const store = await prismadb.store.findUnique({ where: {id: storeId} });
+
+    if (!store) {
+      return NextResponse.json({status: 404, body: { message: `Store with ID ${storeId} not found` }});
+    }
+
+    const result = await prismadb.size.findMany({ where: {storeId: storeId}});
+
+      return NextResponse.json({status: 200, body: {result} });
+    } catch (error) {
+      return NextResponse.json({status: 500, body: {error}});
+    }
+  }
