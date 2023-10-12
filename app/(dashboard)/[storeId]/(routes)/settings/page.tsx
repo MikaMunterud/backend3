@@ -14,6 +14,8 @@ import SettingsForm from './components/settings-form';
 import { AlertModal } from '@/components/modals/alert-modal';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
+import { ApiAlert } from '@/components/ui/api-alert';
+import { useOrigin } from '@/hooks/use-origin';
 
 type SettingsIdProps = {
   name: string;
@@ -22,6 +24,7 @@ type SettingsIdProps = {
 export default function Settings() {
   const params = useParams();
   const router = useRouter();
+  const origin = useOrigin();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -105,6 +108,11 @@ export default function Settings() {
       <Separator />
       <SettingsForm initialData={initialData} />
       <Separator />
+      <ApiAlert
+        title="NEXT_PUBLIC_API_URL"
+        description={`${origin}/api/${params.storeId}`}
+        variant={'public'}
+      />
     </>
   );
 }

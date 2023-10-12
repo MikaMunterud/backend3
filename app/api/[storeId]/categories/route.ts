@@ -1,12 +1,48 @@
-import prismadb from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs";
-import { PrismaClientValidationError } from "@prisma/client/runtime/library";
-import { NextResponse } from "next/server";
+import prismadb from '@/lib/prismadb';
+import { auth } from '@clerk/nextjs';
+import { PrismaClientValidationError } from '@prisma/client/runtime/library';
+import { NextResponse } from 'next/server';
 
-export async function POST(request: Request) {
-  const { name, storeId, billboardId } = await request.json();
-
+export async function POST(
+  request: Request,
+  { params }: { params: { storeId: string } },
+) {
   try {
+    //const { userId } = auth()
+    const { storeId } = params;
+
+    interface Body {
+      name: string;
+      billboardId: string;
+    }
+
+    const { name, billboardId }: Body = await request.json();
+
+    // if (!userId) {
+    //   return NextResponse.json({ body: {error: 'Not authorized'}, status: 401 })
+    // }
+
+    if (!storeId) {
+      return NextResponse.json(
+        { error: 'StoreId is required' },
+        { status: 400 },
+      );
+    }
+
+    if (!name) {
+      return NextResponse.json(
+        { error: 'Name is required and has to be a string' },
+        { status: 400 },
+      );
+    }
+
+    if (!billboardId) {
+      return NextResponse.json(
+        { error: 'Billboard is required and has to be a string' },
+        { status: 400 },
+      );
+    }
+
     const result = await prismadb.category.createMany({
       data: {
         name,
@@ -27,7 +63,7 @@ export async function POST(request: Request) {
 
 export async function GET(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   try {
     const { storeId } = params;
@@ -37,7 +73,8 @@ export async function GET(
         storeId,
       },
     });
-    return NextResponse.json({ status: 200, body: { categories } });
+
+    return NextResponse.json(categories, { status: 200 });
   } catch (err) {
     if (err instanceof PrismaClientValidationError) {
       const errorMessage = err.message;

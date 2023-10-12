@@ -42,9 +42,18 @@ export default function SizeForm({ initialData }: SizeFormProps) {
 
   const [loading, setLoading] = useState(false);
 
+  let defaultValues;
+
+  if (initialData) {
+    defaultValues = {
+      name: initialData.name,
+      value: initialData.value,
+    };
+  }
+
   const form = useForm<SizeFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+    defaultValues: defaultValues || {
       name: '',
     },
   });

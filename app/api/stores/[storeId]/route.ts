@@ -49,6 +49,42 @@ export async function DELETE(
       return new Response('Missing storeId', { status: 400 });
     }
 
+    const storeOrders = await prismadb.order.deleteMany({
+      where: {
+        storeId,
+      },
+    });
+
+    const storeProducts = await prismadb.product.deleteMany({
+      where: {
+        storeId,
+      },
+    });
+
+    const storeColors = await prismadb.color.deleteMany({
+      where: {
+        storeId,
+      },
+    });
+
+    const storeSizes = await prismadb.size.deleteMany({
+      where: {
+        storeId,
+      },
+    });
+
+    const storeCategories = await prismadb.category.deleteMany({
+      where: {
+        storeId,
+      },
+    });
+
+    const storeBillboards = await prismadb.billboard.deleteMany({
+      where: {
+        storeId,
+      },
+    });
+
     const store = await prismadb.store.deleteMany({
       where: {
         id: storeId,

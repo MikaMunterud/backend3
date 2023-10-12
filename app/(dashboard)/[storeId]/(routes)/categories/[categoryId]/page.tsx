@@ -23,7 +23,7 @@ type CategoryIdProps = {
 
 type BillboardProps = {
   id: string;
-  title: string;
+  name: string;
 }[];
 
 export default function CategoryId() {
@@ -40,22 +40,22 @@ export default function CategoryId() {
 
   useEffect(
     function () {
-      if (!newCategory) {
-        getCategory();
-      }
-
-      getBillboards();
+      getCategory();
 
       async function getCategory() {
         try {
-          const response = await axios.get(
-            `/api/${params.storeId}/categories/${params.categoryId}`,
-          );
+          if (!newCategory) {
+            const response = await axios.get(
+              `/api/${params.storeId}/categories/${params.categoryId}`,
+            );
 
-          //this might need to be changed depending on how the data is sent from the api route
-          const data = response.data.body.result;
+            const data = response.data;
 
-          setInitialData(data);
+            setInitialData(data);
+          } else {
+            setInitialData(null);
+          }
+          getBillboards();
         } catch (error: any) {
           router.push(`/${params.storeId}/categories`);
           toast.error(
@@ -66,10 +66,14 @@ export default function CategoryId() {
 
       async function getBillboards() {
         try {
-          const response = await axios.get(`/api/${params.storeId}/billboards`);
+          // const response = await axios.get(`/api/${params.storeId}/billboards`);
 
           //this might need to be changed depending on how the data is sent from the api route
-          const data = response.data.body.result;
+          // const data = response.data;
+          const data = [
+            { id: 'billboard1', name: 'billboard 1' },
+            { id: 'billboard2', name: 'billboard 2' },
+          ];
 
           setBillboards(data);
         } catch (error: any) {

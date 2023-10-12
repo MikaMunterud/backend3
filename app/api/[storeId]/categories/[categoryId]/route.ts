@@ -1,16 +1,16 @@
-import prismadb from "@/lib/prismadb";
+import prismadb from '@/lib/prismadb';
 import {
   PrismaClientKnownRequestError,
   PrismaClientValidationError,
-} from "@prisma/client/runtime/library";
-import { auth } from "@clerk/nextjs";
-import { NextResponse } from "next/server";
+} from '@prisma/client/runtime/library';
+import { auth } from '@clerk/nextjs';
+import { NextResponse } from 'next/server';
 
 /* -----------DELETE---------------- */
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { categoryId: string } }
+  { params }: { params: { categoryId: string } },
 ) {
   try {
     const { categoryId } = params;
@@ -35,10 +35,10 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { categoryId: string } }
+  { params }: { params: { categoryId: string } },
 ) {
   try {
-    const { name } = await req.json();
+    const { name, billboardId } = await req.json();
 
     const { categoryId } = params;
 
@@ -48,6 +48,7 @@ export async function PATCH(
       },
       data: {
         name,
+        billboardId,
       },
     });
 
@@ -55,6 +56,33 @@ export async function PATCH(
   } catch (err) {
     if (err instanceof PrismaClientValidationError) {
       const errorMessage = err.message;
+      return NextResponse.json({ status: 400, body: { errorMessage } });
+    } else {
+      return NextResponse.json({ status: 500, body: { err } });
+    }
+  }
+}
+
+/* -----------GET---------------- */
+
+export async function GET(
+  req: Request,
+  { params }: { params: { categoryId: string } },
+) {
+  try {
+    const { categoryId } = params;
+
+    const category = await prismadb.category.findUnique({
+      where: {
+        id: categoryId,
+      },
+    });
+
+    return NextResponse.json(category, { status: 200 });
+  } catch (err) {
+    if (err instanceof PrismaClientValidationError) {
+      const errorMessage = err.message;
+
       return NextResponse.json({ status: 400, body: { errorMessage } });
     } else {
       return NextResponse.json({ status: 500, body: { err } });

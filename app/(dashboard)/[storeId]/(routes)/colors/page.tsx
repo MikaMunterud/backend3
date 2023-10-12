@@ -14,20 +14,29 @@ import ApiList from '@/components/ui/api-list';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function Colors() {
   const [colors, setColors] = useState<ColorColumn[]>([]);
+  const [loading, setLoading] = useState(true);
   const params = useParams();
 
   useEffect(
     function () {
       async function getSizes() {
-        const response = await axios.get(`/api/${params.storeId}/colors`);
+        try {
+          const response = await axios.get(`/api/${params.storeId}/colors`);
 
-        //this might need to be changed depending on how the data is sent from the api route
-        const data = await response.data.body.result;
+          const data = await response.data;
 
-        setColors(data);
+          setColors(data);
+        } catch (error) {
+          toast.error(
+            'Something went wrong. Could not connect to server. Please try again',
+          );
+        } finally {
+          setLoading(false);
+        }
       }
       getSizes();
     },
@@ -55,6 +64,7 @@ export default function Colors() {
         columns={columns}
         data={colors}
         route="colors"
+        loading={loading}
       />
 
       <Heading title="API Routes" description="Endpoints for colors" />
