@@ -26,8 +26,8 @@ export default function Products() {
       async function getProducts() {
         try {
           const response = await axios.get(`/api/${params.storeId}/products`);
-          const data = await response.data.body.products;
-
+          const data = await response.data;
+          console.log(data);
           setProducts(data);
         } catch (error) {
           toast.error(

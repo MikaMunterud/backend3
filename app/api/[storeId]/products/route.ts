@@ -1,23 +1,23 @@
-import prismadb from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs";
-import { NextResponse, NextRequest } from "next/server";
+import prismadb from '@/lib/prismadb';
+import { auth } from '@clerk/nextjs';
+import { NextResponse, NextRequest } from 'next/server';
 import {
   PrismaClientKnownRequestError,
   PrismaClientValidationError,
-} from "@prisma/client/runtime/library";
+} from '@prisma/client/runtime/library';
 
 /* ----------POST------------ */
 
 export async function POST(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   try {
     /*     const { userId } = auth(); */
 
     interface Body {
       name: string;
-      img: string;
+      images: string;
       categoryId: string;
       price: number;
       isFeatured: boolean;
@@ -28,7 +28,7 @@ export async function POST(
 
     const {
       name,
-      img,
+      images,
       categoryId,
       price,
       isFeatured,
@@ -45,7 +45,7 @@ export async function POST(
     const result = await prismadb.product.createMany({
       data: {
         name,
-        img,
+        images,
         storeId,
         categoryId,
         price,
@@ -70,7 +70,7 @@ export async function POST(
 
 export async function GET(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   try {
     const { storeId } = params;
@@ -94,7 +94,7 @@ export async function GET(
       },
     });
 
-    return NextResponse.json({ status: 200, body: { products } });
+    return NextResponse.json(products, { status: 200 });
   } catch (err) {
     if (err instanceof PrismaClientKnownRequestError) {
       const errorMessage = err.message;
@@ -104,4 +104,3 @@ export async function GET(
     }
   }
 }
-
