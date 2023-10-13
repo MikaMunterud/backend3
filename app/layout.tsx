@@ -5,7 +5,7 @@ import { ModalProvider } from '@/providers/modal-provider';
 import { ToastProvider } from '@/providers/toast-provider';
 
 export const metadata = {
-  title: 'Dashboard for stores',
+  title: 'E-commerce dashboard',
   description: 'Next.js application with Clerk & Prisma',
 };
 
