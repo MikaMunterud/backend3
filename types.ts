@@ -32,3 +32,10 @@ export type Color = {
   value: string;
   storeId: string;
 };
+
+export type Billboard = {
+  id: string;
+  name: string;
+  image: string;
+  storeId: string;
+};

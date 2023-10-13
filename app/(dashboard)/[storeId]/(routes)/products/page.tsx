@@ -15,6 +15,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { format } from 'date-fns';
+import { Category, Product, Color, Size } from '@/types';
 
 export default function Products() {
   const params = useParams();
@@ -23,12 +25,36 @@ export default function Products() {
 
   useEffect(
     function () {
+      getProducts();
+
       async function getProducts() {
         try {
           const response = await axios.get(`/api/${params.storeId}/products`);
           const data = await response.data;
-          console.log(data);
-          setProducts(data);
+
+          if (data.length > 0) {
+            const categories = await axios.get(
+              `/api/${params.storeId}/categories`,
+            );
+            const categoriesData = await categories.data;
+
+            const sizes = await axios.get(`/api/${params.storeId}/sizes`);
+            const sizesData = await sizes.data.body.result;
+
+            const colors = await axios.get(`/api/${params.storeId}/colors`);
+            const colorsData = await colors.data;
+
+            const formattedProducts = await formatProducts(
+              data,
+              categoriesData,
+              sizesData,
+              colorsData,
+            );
+
+            setProducts(formattedProducts);
+          } else {
+            setProducts([]);
+          }
         } catch (error) {
           toast.error(
             'Something went wrong. Could not connect to server. Please try again',
@@ -37,7 +63,34 @@ export default function Products() {
           setLoading(false);
         }
       }
-      getProducts();
+      async function formatProducts(
+        data: Product[],
+        categories: Category[],
+        sizes: Size[],
+        colors: Color[],
+      ) {
+        const formattedProducts = data.map(function (product: Product) {
+          return {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            category: categories.find(function (category: Category) {
+              return category.id === product.categoryId;
+            })?.name,
+            size: sizes.find(function (size: Size) {
+              return size.id === product.sizeId;
+            })?.name,
+            color: colors.find(function (color: Color) {
+              return color.id === product.colorId;
+            })?.name,
+            isFeatured: product.isFeatured,
+            isArchived: product.isArchived,
+            created: format(new Date(product.created), 'MMMM do, yyyy'),
+          };
+        });
+
+        return formattedProducts;
+      }
     },
     [params.storeId],
   );

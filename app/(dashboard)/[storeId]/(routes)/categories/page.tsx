@@ -16,6 +16,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { set } from 'date-fns';
+import { Billboard, Category } from '@/types';
 
 export default function Categories() {
   const [categories, setCategories] = useState<CategoryColumn[]>([]);
@@ -24,12 +25,42 @@ export default function Categories() {
 
   useEffect(
     function () {
+      getCategories();
       async function getCategories() {
         try {
           const response = await axios.get(`/api/${params.storeId}/categories`);
           const data = await response.data;
 
-          setCategories(data);
+          if (data.length > 0) {
+            /*   const billboards = await axios.get(
+              `/api/${params.storeId}/billboards`,
+            );
+            const billboardData = await billboards.data; */
+
+            //this is just test data, the above should be used when we have billboards
+            const billboardData = [
+              {
+                id: 'billboard1',
+                name: 'billboard 1',
+                image: 'image',
+                storeId: 'storeId',
+              },
+              {
+                id: 'billboard2',
+                name: 'billboard 2',
+                image: 'image',
+                storeId: 'storeId',
+              },
+            ];
+
+            const formattedCategories = await formatCategories(
+              data,
+              billboardData,
+            );
+            setCategories(formattedCategories);
+          } else {
+            setCategories([]);
+          }
         } catch (error) {
           toast.error(
             'Something went wrong. Could not connect to server. Please try again',
@@ -38,7 +69,25 @@ export default function Categories() {
           setLoading(false);
         }
       }
-      getCategories();
+
+      async function formatCategories(
+        categories: Category[],
+        billboards: Billboard[],
+      ) {
+        const formattedCategories = categories.map(function (
+          category: Category,
+        ) {
+          return {
+            id: category.id,
+            name: category.name,
+            billboard: billboards.find(function (billboard: Billboard) {
+              return billboard.id === category.billboardId;
+            })?.name,
+          };
+        });
+
+        return formattedCategories;
+      }
     },
     [params.storeId],
   );

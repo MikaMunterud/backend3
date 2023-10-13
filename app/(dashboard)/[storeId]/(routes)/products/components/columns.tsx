@@ -7,12 +7,12 @@ export type ProductColumn = {
   id: string;
   name: string;
   price: number;
-  category: string;
-  size: string;
-  color: string;
+  category: string | undefined;
+  size: string | undefined;
+  color: string | undefined;
   isFeatured: boolean;
   isArchived: boolean;
-  createdAt: string;
+  created: string;
 };
 
 export const columns: ColumnDef<ProductColumn>[] = [
@@ -54,7 +54,7 @@ export const columns: ColumnDef<ProductColumn>[] = [
     ),
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'created',
     header: 'Date',
   },
   {

@@ -6,7 +6,7 @@ import { ColumnDef } from '@tanstack/react-table';
 export type CategoryColumn = {
   id: string;
   name: string;
-  billboardId: string;
+  billboard: string | undefined;
 };
 
 export const columns: ColumnDef<CategoryColumn>[] = [
@@ -15,7 +15,7 @@ export const columns: ColumnDef<CategoryColumn>[] = [
     header: 'Name',
   },
   {
-    accessorKey: 'billboardId',
+    accessorKey: 'billboard',
     header: 'Billboard',
   },
   {
