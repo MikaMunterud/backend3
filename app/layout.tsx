@@ -5,7 +5,8 @@ import { ModalProvider } from '@/providers/modal-provider';
 import { ToastProvider } from '@/providers/toast-provider';
 
 export const metadata = {
-  title: 'Next.js 13 with Clerk',
+  title: 'Dashboard for stores',
+  description: 'Next.js application with Clerk & Prisma',
 };
 
 export default function RootLayout({
