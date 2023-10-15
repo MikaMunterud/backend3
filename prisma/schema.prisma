@@ -12,33 +12,40 @@ datasource db {
 }
 
 model Store {
-  id        String      @id @default(uuid())
-  name      String
-  userId    String
-  products  Product[]   @relation("Store-Product")
-  category  Category[]  @relation("Store-Category")
-  size      Size[]      @relation("Store-Size")
+  id          String      @id @default(uuid())
+  name        String
+  userId      String
+  products    Product[]     @relation("Store-Product")
+  categories  Category[]    @relation("Store-Category")
+  size        Size[]        @relation("Store-Size")
+  billboard   Billboard[]   @relation("Store-Billboard")
+  colors      Color[]       @relation("Store-Color")
+  orders      Order[]      @relation("Store-Order")
 }
 
 model Product {
-  id         String     @id @default(uuid())
-  name       String
-  images     String
-  storeId    String
-  store      Store      @relation("Store-Product", fields: [storeId], references: [id])
-  categoryId String
-  category   Category   @relation("Category-Product", fields: [categoryId], references: [id])
-  sizeId     String
-  size       Size       @relation("Size-Product", fields: [sizeId], references: [id])
-  colorId    String
-  price      Float
-  isFeatured Boolean    @default(false)
-  isArchived Boolean    @default(false)
-  created    DateTime   @default(now())
+  id          String     @id @default(uuid())
+  name        String
+  img         String
+  description String
+  storeId     String
+  store       Store      @relation("Store-Product", fields: [storeId], references: [id])
+  categoryId  String
+  category    Category   @relation("Category-Product", fields: [categoryId], references: [id])
+  sizeId      String
+  size        Size       @relation("Size-Product", fields: [sizeId], references: [id])
+  colorId     String
+  color       Color      @relation("Color-Product", fields: [colorId], references: [id])
+  price       Decimal
+  isFeatured  Boolean    @default(false)
+  isArchived  Boolean    @default(false)
+  created     DateTime   @default(now())
+  orderItems  OrderItem[] @relation("Product-OrderItem")
     
   @@index([storeId])
   @@index([categoryId])
   @@index([sizeId])
+  @@index([colorId])
 }
 
 model Category {
@@ -47,15 +54,17 @@ model Category {
   storeId     String
   store       Store     @relation("Store-Category", fields: [storeId], references: [id])
   billboardId String
+  billboard   Billboard @relation("Billboard-Category", fields: [billboardId], references: [id])
   products    Product[] @relation("Category-Product")
 
   @@index([storeId])
+  @@index([billboardId])
 }
 
 model Size {
   id       String      @id @default(uuid())
-  name     String
-  value    String
+  name     String      @unique
+  value    String      @unique
   storeId  String
   store    Store       @relation("Store-Size", fields: [storeId], references: [id])
   products Product[]   @relation("Size-Product")
@@ -65,31 +74,49 @@ model Size {
 
 model Color {
   id        String      @id @default(uuid())
-  name      String
-  value     String
+  name      String      @unique
+  value     String      @unique
   storeId   String
+  store    Store       @relation("Store-Color", fields: [storeId], references: [id])
+  products Product[]   @relation("Color-Product")
+
+  @@index([storeId])
 }
 
 model Billboard {
-  id        String      @id @default(uuid())
-  name      String
-  image     String
-  storeId   String
+  id          String      @id @default(uuid())
+  name        String
+  img         String
+  storeId     String
+  store       Store       @relation("Store-Billboard", fields: [storeId], references: [id])
+  categories  Category[]  @relation("Billboard-Category")
+
+  @@index([storeId])
 }
 
 model Order {
-  id        String      @id @default(uuid())
-  adress    String
-  phone     Int
-  isPaid    Boolean
-  storeId   String
-  date      DateTime    @default(now())
+  id          String        @id @default(uuid())
+  adress      String
+  phone       Int
+  isPaid      Boolean
+  storeId     String
+  store       Store         @relation("Store-Order", fields: [storeId], references: [id])
+  orderItems  OrderItem[]   @relation("Order-OrderItem")
+  created     DateTime      @default(now())
+  updated     DateTime      @updatedAt
+
+  @@index([storeId])
 }
 
 model OrderItem {
   id        String      @id @default(uuid())
   orderId   String
+  order     Order       @relation("Order-OrderItem", fields: [orderId], references: [id])
   productId String
+  product   Product     @relation("Product-OrderItem", fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
 }
 
 
