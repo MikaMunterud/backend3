@@ -10,6 +10,7 @@ export type ProductColumn = {
   category: string | undefined;
   size: string | undefined;
   color: string | undefined;
+  colorValue: string | undefined;
   isFeatured: boolean;
   isArchived: boolean;
   created: string;
@@ -44,11 +45,11 @@ export const columns: ColumnDef<ProductColumn>[] = [
     accessorKey: 'color',
     header: 'Color',
     cell: ({ row }) => (
-      <div className="flex items-center gap-x-2">
+      <div className="flex items-center justify-between gap-x-2">
         {row.original.color}
         <div
           className="h-6 w-6 rounded-full border"
-          style={{ backgroundColor: row.original.color }}
+          style={{ backgroundColor: row.original.colorValue }}
         />
       </div>
     ),
