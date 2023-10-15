@@ -73,7 +73,7 @@ model Color {
 model Billboard {
   id        String      @id @default(uuid())
   name      String
-  imgage    String
+  image     String
   storeId   String
 }
 

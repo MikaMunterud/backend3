@@ -32,26 +32,10 @@ export default function Categories() {
           const data = await response.data;
 
           if (data.length > 0) {
-            /*   const billboards = await axios.get(
+            const billboards = await axios.get(
               `/api/${params.storeId}/billboards`,
             );
-            const billboardData = await billboards.data; */
-
-            //this is just test data, the above should be used when we have billboards
-            const billboardData = [
-              {
-                id: 'billboard1',
-                name: 'billboard 1',
-                image: 'image',
-                storeId: 'storeId',
-              },
-              {
-                id: 'billboard2',
-                name: 'billboard 2',
-                image: 'image',
-                storeId: 'storeId',
-              },
-            ];
+            const billboardData = await billboards.data;
 
             const formattedCategories = await formatCategories(
               data,

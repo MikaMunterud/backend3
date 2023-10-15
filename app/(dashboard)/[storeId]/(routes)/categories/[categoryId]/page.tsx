@@ -66,14 +66,8 @@ export default function CategoryId() {
 
       async function getBillboards() {
         try {
-          // const response = await axios.get(`/api/${params.storeId}/billboards`);
-
-          //this might need to be changed depending on how the data is sent from the api route
-          // const data = response.data;
-          const data = [
-            { id: 'billboard1', name: 'billboard 1' },
-            { id: 'billboard2', name: 'billboard 2' },
-          ];
+          const response = await axios.get(`/api/${params.storeId}/billboards`);
+          const data = response.data;
 
           setBillboards(data);
         } catch (error: any) {

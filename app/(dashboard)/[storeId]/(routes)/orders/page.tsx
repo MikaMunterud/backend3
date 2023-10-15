@@ -23,7 +23,7 @@ export default function Orders() {
           const response = await axios.get(`/api/${params.storeId}/orders`);
 
           //this might need to be changed depending on how the data is sent from the api route
-          const data = await response.data.body.result;
+          const data = await response.data;
 
           setOrders(data);
         } catch (error) {

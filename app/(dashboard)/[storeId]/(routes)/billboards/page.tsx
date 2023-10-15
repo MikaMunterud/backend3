@@ -27,8 +27,7 @@ export default function Billboards() {
         try {
           const response = await axios.get(`/api/${params.storeId}/billboards`);
 
-          //this might need to be changed depending on how the data is sent from the api route
-          const data = await response.data.body.result;
+          const data = await response.data;
 
           setBillboards(data);
         } catch (error) {
