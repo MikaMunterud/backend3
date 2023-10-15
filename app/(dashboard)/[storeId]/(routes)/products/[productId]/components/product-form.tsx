@@ -36,6 +36,7 @@ const formSchema = z.object({
   images: z
     .object({ url: z.string() })
     .array()
+    .min(1, { message: 'At least one image is required.' })
     .max(1, { message: 'Only one image is allowed.' }),
   price: z.coerce.number().min(0.1),
   categoryId: z.string().min(1),
@@ -342,8 +343,7 @@ export function ProductForm({
             />
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
-            {/* {action} */}
-            Create
+            {initialData ? 'Save changes' : 'Create product'}
           </Button>
         </form>
       </Form>
