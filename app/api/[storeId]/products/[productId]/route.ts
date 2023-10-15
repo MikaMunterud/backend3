@@ -65,7 +65,8 @@ export async function PATCH(
 
     interface Body {
       name: string;
-      images: string;
+      img: string;
+      description: string;
       categoryId: string;
       price: number;
       isFeatured: boolean;
@@ -76,7 +77,8 @@ export async function PATCH(
 
     const {
       name,
-      images,
+      img,
+      description,
       categoryId,
       price,
       isFeatured,
@@ -97,7 +99,8 @@ export async function PATCH(
       where: { id: params.productId },
       data: {
         name,
-        images,
+        img,
+        description,
         categoryId,
         price,
         isFeatured,

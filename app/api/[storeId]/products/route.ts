@@ -17,7 +17,8 @@ export async function POST(
 
     interface Body {
       name: string;
-      images: string;
+      img: string;
+      description: string;
       categoryId: string;
       price: number;
       isFeatured: boolean;
@@ -28,7 +29,8 @@ export async function POST(
 
     const {
       name,
-      images,
+      img,
+      description,
       categoryId,
       price,
       isFeatured,
@@ -45,7 +47,8 @@ export async function POST(
     const result = await prismadb.product.createMany({
       data: {
         name,
-        images,
+        img,
+        description,
         storeId,
         categoryId,
         price,
