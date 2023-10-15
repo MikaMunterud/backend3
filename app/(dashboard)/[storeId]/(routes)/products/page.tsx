@@ -80,12 +80,16 @@ export default function Products() {
             size: sizes.find(function (size: Size) {
               return size.id === product.sizeId;
             })?.name,
+
             color: colors.find(function (color: Color) {
               return color.id === product.colorId;
             })?.name,
+            colorValue: colors.find(function (color: Color) {
+              return color.id === product.colorId;
+            })?.value,
             isFeatured: product.isFeatured,
             isArchived: product.isArchived,
-            created: format(new Date(product.created), 'MMMM do, yyyy'),
+            created: format(new Date(product.created), 'do MMM yyyy'),
           };
         });
 
