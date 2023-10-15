@@ -254,7 +254,7 @@ export function ProductForm({
                     <SelectContent>
                       {sizes.map((size) => (
                         <SelectItem key={size.id} value={size.id}>
-                          {`${size.value}, ${size.name}`}
+                          {size.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
