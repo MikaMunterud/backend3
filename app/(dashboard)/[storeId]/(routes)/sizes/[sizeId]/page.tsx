@@ -14,12 +14,7 @@ import SizeForm from './components/size-form';
 import { AlertModal } from '@/components/modals/alert-modal';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-
-type SizeIdProps = {
-  id: string;
-  name: string;
-  value: string;
-};
+import { Size } from '@/types';
 
 export default function SizeId() {
   const params = useParams();
@@ -28,7 +23,7 @@ export default function SizeId() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [initialData, setInitialData] = useState<SizeIdProps | null>(null);
+  const [initialData, setInitialData] = useState<Size | null>(null);
 
   const newSize: boolean = params.sizeId === 'new';
 
