@@ -8,26 +8,23 @@ export async function POST(
 ) {
   try {
     const { userId } = auth();
-    const { storeId } = params;
-
-    interface Body {
-      name: string;
-      image: string;
-      value: string;
-    }
-
-    const { name, image }: Body = await request.json();
 
     if (!userId) {
-      return NextResponse.json({
-        error: 'Unauthorized',
-        status: 401,
-      });
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
     }
+
+    const { storeId } = params;
 
     if (!storeId) {
       return NextResponse.json({ error: 'StoreId is required', status: 400 });
     }
+
+    interface Body {
+      name: string;
+      img: string;
+    }
+
+    const { name, img }: Body = await request.json();
 
     if (!name) {
       return NextResponse.json({
@@ -36,7 +33,7 @@ export async function POST(
       });
     }
 
-    if (!image) {
+    if (!img) {
       return NextResponse.json({
         error: 'Image is required.',
         status: 400,
@@ -46,13 +43,13 @@ export async function POST(
     const result = await prismadb.billboard.create({
       data: {
         name,
-        image,
+        img,
         storeId,
       },
     });
     return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json({ error, status: 500 });
   }
 }
 
@@ -64,10 +61,7 @@ export async function GET(
     const { storeId } = params;
 
     if (!storeId) {
-      return NextResponse.json(
-        { error: 'StoreId is required' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'StoreId is required', status: 400 });
     }
 
     const billboards = await prismadb.billboard.findMany({
@@ -78,6 +72,6 @@ export async function GET(
 
     return NextResponse.json(billboards, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json({ error, status: 500 });
   }
 }
