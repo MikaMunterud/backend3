@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { AlertModal } from '@/components/modals/alert-modal';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+
 import { BillboardForm } from './components/billboard-form';
 import { Billboard } from '@/types';
 
@@ -59,9 +60,11 @@ export default function BillboardId() {
   async function onDelete() {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/billboards/${params.sizeId}`);
+      await axios.delete(
+        `/api/${params.storeId}/billboards/${params.billboardId}`,
+      );
       router.refresh();
-      router.push(`/${params.storeId}/sizes`);
+      router.push(`/${params.storeId}/billboards`);
       toast.success('Billboard deleted.');
     } catch (error: any) {
       toast.error(
