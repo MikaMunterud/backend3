@@ -20,20 +20,23 @@ import { Button } from '@/components/ui/button';
 
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { Size } from '@/types';
 
 const formSchema = z.object({
   name: z
     .string()
-    .min(1, { message: 'Size name must be at least 1 character.' }),
+    .min(1, { message: 'Size name must be at least 1 character.' })
+    .max(20, { message: 'Size name must be at most 20 characters.' }),
   value: z
     .string()
-    .min(1, { message: 'Size value must be at least 1 character.' }),
+    .min(1, { message: 'Size value must be at least 1 character.' })
+    .max(20, { message: 'Size value must be at most 20 characters.' }),
 });
 
 type SizeFormValues = z.infer<typeof formSchema>;
 
 interface SizeFormProps {
-  initialData: { id: string; name: string; value: string } | null;
+  initialData: Size | null;
 }
 
 export default function SizeForm({ initialData }: SizeFormProps) {
@@ -55,6 +58,7 @@ export default function SizeForm({ initialData }: SizeFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues || {
       name: '',
+      value: '',
     },
   });
 
