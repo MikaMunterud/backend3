@@ -1,68 +1,79 @@
 'use client';
 
-import axios from 'axios'; // Import Axios
-
-import { ProductForm } from './components/product-form';
-import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Heading from '@/components/ui/heading';
-import { AlertModal } from '@/components/modals/alert-modal';
+import { useEffect, useState } from 'react';
 
-import { Trash } from 'lucide-react';
+import Heading from '@/components/ui/heading';
 import { Button } from '@/components/ui/button';
-import toast from 'react-hot-toast';
+import { Trash } from 'lucide-react';
+
 import { Separator } from '@/components/ui/separator';
 
-const ProductPage = () => {
+import { AlertModal } from '@/components/modals/alert-modal';
+import toast from 'react-hot-toast';
+import axios from 'axios';
+
+import { ProductForm } from './components/product-form';
+
+export default function ProductPage() {
+  const params = useParams();
+  const router = useRouter();
+
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [productData, setProductData] = useState(null);
   const [categories, setCategories] = useState([]);
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
-  const [mounted, setMounted] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const params = useParams();
-  const router = useRouter();
 
   const newProduct = params.productId === 'new';
 
-  useEffect(() => {
-    fetchData();
+  useEffect(
+    function () {
+      fetchData();
 
-    async function fetchData() {
-      try {
-        // Fetch product data
-        if (!newProduct) {
-          const productResponse = await axios.get(
-            `/api/${params.storeId}/products/${params.productId}`,
+      async function fetchData() {
+        try {
+          // Fetch product data
+          if (!newProduct) {
+            const productResponse = await axios.get(
+              `/api/${params.storeId}/products/${params.productId}`,
+            );
+            const product = await productResponse.data;
+            setProductData(product);
+          } else {
+            setProductData(null);
+          }
+
+          // Fetch categories, colors, and sizes
+          const categoriesResponse = await axios.get(
+            `/api/${params.storeId}/categories`,
           );
-          const product = await productResponse.data;
-          setProductData(product);
-        } else {
-          setProductData(null);
+          const categories = await categoriesResponse.data;
+          setCategories(categories);
+
+          const colorsResponse = await axios.get(
+            `/api/${params.storeId}/colors`,
+          );
+          const colors = await colorsResponse.data;
+          setColors(colors);
+
+          const sizesResponse = await axios.get(`/api/${params.storeId}/sizes`);
+          const sizes = await sizesResponse.data;
+          setSizes(sizes);
+        } catch (error) {
+          router.push(`/${params.storeId}/products`);
+          toast.error(
+            'Something went wrong. Product not found. Please try again.',
+          );
+        } finally {
+          setMounted(true);
         }
-
-        // Fetch categories, colors, and sizes
-        const categoriesResponse = await axios.get(
-          `/api/${params.storeId}/categories`,
-        );
-        const categories = await categoriesResponse.data;
-        setCategories(categories);
-
-        const colorsResponse = await axios.get(`/api/${params.storeId}/colors`);
-        const colors = await colorsResponse.data;
-        setColors(colors);
-
-        const sizesResponse = await axios.get(`/api/${params.storeId}/sizes`);
-        const sizes = await sizesResponse.data.body.result;
-        setSizes(sizes);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setMounted(true);
       }
-    }
-  }, [params.storeId, params.productId, newProduct]);
+    },
+    [params.storeId, params.productId, newProduct, router],
+  );
 
   async function onDelete() {
     try {
@@ -134,6 +145,4 @@ const ProductPage = () => {
       />
     </>
   );
-};
-
-export default ProductPage;
+}
