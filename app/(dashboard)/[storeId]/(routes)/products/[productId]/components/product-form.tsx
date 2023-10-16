@@ -29,19 +29,24 @@ import { Category, Color, Product, Size } from '@/types';
 import { useParams, useRouter } from 'next/navigation';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { Textarea } from '@/components/ui/textarea';
 
 // Define the form schema. This will be used to validate the form values.
 const formSchema = z.object({
-  name: z.string().min(1),
-  images: z
+  name: z.string().min(1, { message: 'Name must be at least one character.' }),
+  img: z
     .object({ url: z.string() })
     .array()
     .min(1, { message: 'At least one image is required.' })
     .max(1, { message: 'Only one image is allowed.' }),
+  description: z
+    .string()
+    .min(1, { message: 'Description must be at least one character.' })
+    .max(200, { message: 'Description must be less than 200 characters.' }),
   price: z.coerce.number().min(0.1),
-  categoryId: z.string().min(1),
-  colorId: z.string().min(1),
-  sizeId: z.string().min(1),
+  categoryId: z.string().min(1, { message: 'Category is required.' }),
+  colorId: z.string().min(1, { message: 'Color is required.' }),
+  sizeId: z.string().min(1, { message: 'Size is required.' }),
   isFeatured: z.boolean().default(false).optional(),
   isArchived: z.boolean().default(false).optional(),
 });
@@ -70,7 +75,8 @@ export function ProductForm({
   if (initialData) {
     defaultValues = {
       name: initialData.name,
-      images: [{ url: initialData.images }], //this uses only the first image of a product
+      img: [{ url: initialData.img }], //this uses only the first image of a product
+      description: initialData.description,
       price: initialData.price,
       categoryId: initialData.categoryId,
       colorId: initialData.colorId,
@@ -85,7 +91,8 @@ export function ProductForm({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues || {
       name: '',
-      images: [],
+      img: [],
+      description: '',
       categoryId: '',
       colorId: '',
       sizeId: '',
@@ -99,7 +106,8 @@ export function ProductForm({
     //this uses only the first image of a product
     const product = {
       name: values.name,
-      images: values.images[0].url,
+      img: values.img[0].url,
+      description: values.description,
       price: values.price,
       categoryId: values.categoryId,
       colorId: values.colorId,
@@ -141,13 +149,13 @@ export function ProductForm({
         >
           <FormField
             control={form.control}
-            name="images"
+            name="img"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Images</FormLabel>
                 <FormControl>
                   <ImageUpload
-                    value={field.value.map((image) => image.url)}
+                    value={field.value.map((img) => img.url)}
                     disabled={loading}
                     onChange={(url) =>
                       field.onChange([...field.value, { url }])
@@ -291,6 +299,25 @@ export function ProductForm({
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      disabled={loading}
+                      className="resize-none"
+                      placeholder="Product description"
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

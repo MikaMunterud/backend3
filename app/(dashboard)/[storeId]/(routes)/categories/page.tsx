@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { set } from 'date-fns';
+
 import { Billboard, Category } from '@/types';
 
 export default function Categories() {

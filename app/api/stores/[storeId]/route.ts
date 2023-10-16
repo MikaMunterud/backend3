@@ -7,17 +7,29 @@ export async function PATCH(
   { params }: { params: { storeId: string } },
 ) {
   try {
-    const body = await req.json();
-    const { name } = body;
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized.', status: 401 });
+    }
 
     const { storeId } = params;
 
-    if (!name) {
-      return new Response('Missing name', { status: 400 });
+    if (!storeId) {
+      return Response.json({ error: 'StoreId is required.', status: 400 });
     }
 
-    if (!params.storeId) {
-      return new Response('Missing storeId', { status: 400 });
+    interface Body {
+      name: string;
+    }
+
+    const { name }: Body = await req.json();
+
+    if (!name) {
+      return NextResponse.json({
+        error: 'Name is required and has to be a string',
+        status: 400,
+      });
     }
 
     const updatedStore = await prismadb.store.updateMany({
@@ -29,24 +41,28 @@ export async function PATCH(
       },
     });
 
-    return NextResponse.json(updatedStore);
+    return NextResponse.json(updatedStore, { status: 200 });
   } catch (error) {
     console.log('[PATCH in stores]', error);
     return new Response('Internal Server Error', { status: 500 });
   }
 }
 
-// DELETE
-
 export async function DELETE(
   _req: Request,
   { params }: { params: { storeId: string } },
 ) {
   try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized.', status: 401 });
+    }
+
     const { storeId } = params;
 
-    if (!params.storeId) {
-      return new Response('Missing storeId', { status: 400 });
+    if (!storeId) {
+      return Response.json({ error: 'StoreId is required.', status: 400 });
     }
 
     const storeOrders = await prismadb.order.deleteMany({
@@ -91,7 +107,7 @@ export async function DELETE(
       },
     });
 
-    return NextResponse.json(store);
+    return NextResponse.json(store, { status: 200 });
   } catch (error) {
     console.log('[DELETE in stores]', error);
     return new Response('Internal Server Error', { status: 500 });
@@ -106,13 +122,13 @@ export async function GET(
     const { userId } = auth();
 
     if (!userId) {
-      return new NextResponse('Not authorized', { status: 401 });
+      return NextResponse.json({ error: 'Not authorized.', status: 401 });
     }
 
     const { storeId } = params;
 
-    if (!params.storeId) {
-      return new Response('Missing storeId', { status: 400 });
+    if (!storeId) {
+      return Response.json({ error: 'StoreId is required.', status: 400 });
     }
 
     const result = await prismadb.store.findFirst({
@@ -126,7 +142,7 @@ export async function GET(
     });
 
     if (result === null) {
-      return new NextResponse('No store found', { status: 404 });
+      return NextResponse.json({ error: 'No store found', status: 404 });
     }
 
     return NextResponse.json(result, { status: 200 });

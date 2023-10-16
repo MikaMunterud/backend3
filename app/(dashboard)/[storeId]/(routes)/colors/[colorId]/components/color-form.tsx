@@ -20,22 +20,24 @@ import { Button } from '@/components/ui/button';
 
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { Color } from '@/types';
 
 const formSchema = z.object({
   name: z
     .string()
-    .min(2, { message: 'Color name must be at least 2 characters.' }),
+    .min(1, { message: 'Color name must be at least 1 characters.' })
+    .max(20, { message: 'Color name must be at most 20 characters.' }),
   value: z
     .string()
-    .min(4)
-    .max(9)
+    .min(4, { message: 'Value must be a valid hex code.' })
+    .max(9, { message: 'Value must be a valid hex code.' })
     .regex(/^#/, { message: 'Value must be a valid hex code.' }),
 });
 
 type ColorFormValues = z.infer<typeof formSchema>;
 
 interface ColorFormProps {
-  initialData: { id: string; name: string; value: string } | null;
+  initialData: Color | null;
 }
 
 export default function ColorForm({ initialData }: ColorFormProps) {

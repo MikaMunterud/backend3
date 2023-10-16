@@ -2,11 +2,22 @@ import prismadb from '@/lib/prismadb';
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
-export async function POST(req: Request,
-  { params }: { params: { storeId: string }}) {
+export async function POST(
+  req: Request,
+  { params }: { params: { storeId: string } },
+) {
   try {
-    //const { userId } = auth()
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
+
     const { storeId } = params;
+
+    if (!storeId) {
+      return NextResponse.json({ error: 'StoreId is required', status: 400 });
+    }
     interface Body {
       name: string;
       value: string;
@@ -14,53 +25,56 @@ export async function POST(req: Request,
 
     const { name, value }: Body = await req.json();
 
-    // if (!userId) {
-    //   return NextResponse.json({ body: {error: 'Not authorized'}, status: 401 })
-    // }
     if (!name) {
-      return NextResponse.json( {error: 'Name is required and has to be a string'}, {status: 400})
+      return NextResponse.json({
+        error: 'Name is required and has to be a string',
+        status: 400,
+      });
     }
-    if (!value ) {
-      return NextResponse.json({error: 'Value is required and has to be a string'}, {status: 400})
-    }
-    if (!storeId) {
-      return NextResponse.json({error: 'StoreId is required'}, {status: 400})
+    if (!value) {
+      return NextResponse.json({
+        error: 'Value is required and has to be a string',
+        status: 400,
+      });
     }
 
-    const result = await prismadb.size.create(
-      { data: { 
-          name,
-          value,
-          storeId }});
-    
-    return NextResponse.json({body: `${name} was added`, status: 201 });
+    const result = await prismadb.size.create({
+      data: {
+        name,
+        value,
+        storeId,
+      },
+    });
+
+    return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    return NextResponse.json({error}, {status: 500});
+    return NextResponse.json({ error, status: 500 });
   }
 }
 
-export async function GET(req: Request, { params }: { params: { storeId: string }}) {
-    try {
-      //const { userId } = auth()
-      const { storeId } = params;
+export async function GET(
+  req: Request,
+  { params }: { params: { storeId: string } },
+) {
+  try {
+    const { userId } = auth();
 
-    // if (!userId) {
-    //   return NextResponse.json({ body: {error: 'Not authorized'}, status: 401 })
-    // }
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
+
+    const { storeId } = params;
+
     if (!storeId) {
-      return NextResponse.json({error: 'StoreId is required'}, {status: 400})
+      return NextResponse.json({ error: 'StoreId is required', status: 400 });
     }
 
-    const store = await prismadb.store.findUnique({ where: {id: storeId} });
+    const result = await prismadb.size.findMany({
+      where: { storeId: storeId },
+    });
 
-    if (!store) {
-      return NextResponse.json({status: 404, body: { message: `Store with ID ${storeId} not found` }});
-    }
-
-    const result = await prismadb.size.findMany({ where: {storeId: storeId}});
-
-      return NextResponse.json({status: 200, body: {result} });
-    } catch (error) {
-      return NextResponse.json({status: 500, body: {error}});
-    }
+    return NextResponse.json(result, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ status: 500, error });
   }
+}

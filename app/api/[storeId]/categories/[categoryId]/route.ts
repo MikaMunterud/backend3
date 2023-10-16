@@ -6,14 +6,28 @@ import {
 import { auth } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
-/* -----------DELETE---------------- */
-
 export async function DELETE(
   req: Request,
   { params }: { params: { categoryId: string } },
 ) {
   try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({
+        error: 'Not authorized',
+        status: 401,
+      });
+    }
+
     const { categoryId } = params;
+
+    if (!categoryId) {
+      return NextResponse.json({
+        error: 'Category is required and has to be a string',
+        status: 400,
+      });
+    }
 
     const result = await prismadb.category.delete({
       where: {
@@ -31,16 +45,41 @@ export async function DELETE(
   }
 }
 
-/* -----------PATCH---------------- */
-
 export async function PATCH(
   req: Request,
   { params }: { params: { categoryId: string } },
 ) {
   try {
-    const { name, billboardId } = await req.json();
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
 
     const { categoryId } = params;
+
+    if (!categoryId) {
+      return NextResponse.json({
+        error: 'CategoryId is required.',
+        status: 400,
+      });
+    }
+
+    const { name, billboardId } = await req.json();
+
+    if (!name) {
+      return NextResponse.json({
+        error: 'Name is required and has to be a string',
+        status: 400,
+      });
+    }
+
+    if (!billboardId) {
+      return NextResponse.json({
+        error: 'BillboardId is required.',
+        status: 400,
+      });
+    }
 
     const result = await prismadb.category.updateMany({
       where: {
@@ -63,14 +102,19 @@ export async function PATCH(
   }
 }
 
-/* -----------GET---------------- */
-
 export async function GET(
   req: Request,
   { params }: { params: { categoryId: string } },
 ) {
   try {
     const { categoryId } = params;
+
+    if (!categoryId) {
+      return NextResponse.json({
+        error: 'Category is required and has to be a string',
+        status: 400,
+      });
+    }
 
     const category = await prismadb.category.findUnique({
       where: {

@@ -8,8 +8,17 @@ export async function POST(
   { params }: { params: { storeId: string } },
 ) {
   try {
-    //const { userId } = auth()
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
+
     const { storeId } = params;
+
+    if (!storeId) {
+      return NextResponse.json({ error: 'StoreId is required', status: 400 });
+    }
 
     interface Body {
       name: string;
@@ -17,17 +26,6 @@ export async function POST(
     }
 
     const { name, value }: Body = await request.json();
-
-    // if (!userId) {
-    //   return NextResponse.json({ body: {error: 'Not authorized'}, status: 401 })
-    // }
-
-    if (!storeId) {
-      return NextResponse.json(
-        { error: 'StoreId is required' },
-        { status: 400 },
-      );
-    }
 
     if (!name) {
       return NextResponse.json(

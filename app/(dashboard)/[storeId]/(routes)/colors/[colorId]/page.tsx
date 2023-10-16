@@ -15,11 +15,7 @@ import { AlertModal } from '@/components/modals/alert-modal';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 
-type ColorIdProps = {
-  id: string;
-  name: string;
-  value: string;
-};
+import { Color } from '@/types';
 
 export default function ColorId() {
   const params = useParams();
@@ -28,7 +24,7 @@ export default function ColorId() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [initialData, setInitialData] = useState<ColorIdProps | null>(null);
+  const [initialData, setInitialData] = useState<Color | null>(null);
 
   const newColor: boolean = params.colorId === 'new';
 
@@ -52,7 +48,7 @@ export default function ColorId() {
         } catch (error: any) {
           router.push(`/${params.storeId}/colors`);
           toast.error(
-            'Something went wrong. Category not found. Please try again.',
+            'Something went wrong. Color not found. Please try again.',
           );
         } finally {
           setMounted(true);
@@ -70,7 +66,7 @@ export default function ColorId() {
       router.push(`/${params.storeId}/colors`);
       toast.success('Color deleted.');
     } catch (error: any) {
-      toast.error('Make sure you removed all products using this size first.');
+      toast.error('Make sure you removed all products using this color first.');
     } finally {
       setLoading(false);
       setOpen(false);

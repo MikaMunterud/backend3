@@ -7,22 +7,18 @@ export async function GET(
   { params }: { params: { productId: string } },
 ) {
   try {
-    /*     const { userId } = auth()
+    const { productId } = params;
 
-    if(!userId) {
-      return new NextResponse('Not authorized', { status: 401 })
-    }
- */
-    if (!params.productId) {
-      return new NextResponse('productId is required', { status: 400 });
+    if (!productId) {
+      return NextResponse.json({ error: 'productId is required', status: 400 });
     }
 
     const result = await prismadb.product.findUnique({
-      where: { id: params.productId },
+      where: { id: productId },
     });
 
     if (result === null) {
-      return new NextResponse('No product found', { status: 404 });
+      return NextResponse.json({ error: 'No product found', status: 404 });
     }
 
     return NextResponse.json(result, { status: 200 });
@@ -36,18 +32,20 @@ export async function DELETE(
   { params }: { params: { productId: string } },
 ) {
   try {
-    /*     const { userId } = auth();
+    const { userId } = auth();
 
-    if(!userId) {
-      return new NextResponse('Not authorized', { status: 401 })
-    } */
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
 
-    if (!params.productId) {
-      return new NextResponse('productId is required', { status: 400 });
+    const { productId } = params;
+
+    if (!productId) {
+      return NextResponse.json({ error: 'ProductId is required', status: 400 });
     }
 
     const result = await prismadb.product.delete({
-      where: { id: params.productId },
+      where: { id: productId },
     });
     const resName = result.name;
     return NextResponse.json(`${resName} is deleted`, { status: 200 });
@@ -61,7 +59,17 @@ export async function PATCH(
   { params }: { params: { productId: string } },
 ) {
   try {
-    /*  const { userId } = auth(); */
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
+
+    const { productId } = params;
+
+    if (!productId) {
+      return NextResponse.json({ error: 'ProductId is required', status: 400 });
+    }
 
     interface Body {
       name: string;
@@ -87,12 +95,53 @@ export async function PATCH(
       colorId,
     }: Body = await req.json();
 
-    /*     if(!userId) {
-      return new NextResponse('Not authorized', { status: 401 })
-    } */
+    if (!name) {
+      return NextResponse.json({
+        error: 'Name is required and has to be a string',
+        status: 400,
+      });
+    }
 
-    if (!params.productId) {
-      return new NextResponse('productId is required', { status: 400 });
+    if (!img) {
+      return NextResponse.json({
+        error: 'Image is required and has to be a string',
+        status: 400,
+      });
+    }
+
+    if (!description) {
+      return NextResponse.json({
+        error: 'Description is required and has to be a string',
+        status: 400,
+      });
+    }
+
+    if (!categoryId) {
+      return NextResponse.json({
+        error: 'Category is required and has to be a string',
+        status: 400,
+      });
+    }
+
+    if (!price) {
+      return NextResponse.json({
+        error: 'Price is required and has to be a number',
+        status: 400,
+      });
+    }
+
+    if (!sizeId) {
+      return NextResponse.json({
+        error: 'Size is required and has to be a string',
+        status: 400,
+      });
+    }
+
+    if (!colorId) {
+      return NextResponse.json({
+        error: 'Color is required and has to be a string',
+        status: 400,
+      });
     }
 
     const result = await prismadb.product.update({

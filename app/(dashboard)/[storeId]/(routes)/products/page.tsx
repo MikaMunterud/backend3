@@ -39,7 +39,7 @@ export default function Products() {
             const categoriesData = await categories.data;
 
             const sizes = await axios.get(`/api/${params.storeId}/sizes`);
-            const sizesData = await sizes.data.body.result;
+            const sizesData = await sizes.data;
 
             const colors = await axios.get(`/api/${params.storeId}/colors`);
             const colorsData = await colors.data;

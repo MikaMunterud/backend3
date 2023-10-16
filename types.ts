@@ -4,7 +4,8 @@ export type Product = {
   categoryId: string;
   colorId: string;
   created: Date;
-  images: string;
+  img: string;
+  description: string;
   isArchived: boolean;
   isFeatured: boolean;
   price: number;
@@ -36,6 +37,6 @@ export type Color = {
 export type Billboard = {
   id: string;
   name: string;
-  image: string;
+  img: string;
   storeId: string;
 };

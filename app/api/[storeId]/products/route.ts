@@ -6,15 +6,22 @@ import {
   PrismaClientValidationError,
 } from '@prisma/client/runtime/library';
 
-/* ----------POST------------ */
-
 export async function POST(
   request: Request,
   { params }: { params: { storeId: string } },
 ) {
   try {
-    /*     const { userId } = auth(); */
+    const { userId } = auth();
 
+    if (!userId) {
+      return new NextResponse('Not authorized', { status: 401 });
+    }
+
+    const { storeId } = params;
+
+    if (!storeId) {
+      return NextResponse.json({ error: 'StoreId is required', status: 400 });
+    }
     interface Body {
       name: string;
       img: string;
@@ -38,11 +45,55 @@ export async function POST(
       sizeId,
       colorId,
     }: Body = await request.json();
-    const { storeId } = params;
 
-    /*    if (!userId) {
-      return new NextResponse("Not authorized", { status: 401 });
-    }  */
+    if (!name) {
+      return NextResponse.json({
+        error: 'Name is required and has to be a string',
+        status: 400,
+      });
+    }
+
+    if (!img) {
+      return NextResponse.json({
+        error: 'Image is required and has to be a string',
+        status: 400,
+      });
+    }
+
+    if (!description) {
+      return NextResponse.json({
+        error: 'Description is required and has to be a string',
+        status: 400,
+      });
+    }
+
+    if (!categoryId) {
+      return NextResponse.json({
+        error: 'Category is required and has to be a string',
+        status: 400,
+      });
+    }
+
+    if (!price) {
+      return NextResponse.json({
+        error: 'Price is required and has to be a number',
+        status: 400,
+      });
+    }
+
+    if (!sizeId) {
+      return NextResponse.json({
+        error: 'Size is required and has to be a string',
+        status: 400,
+      });
+    }
+
+    if (!colorId) {
+      return NextResponse.json({
+        error: 'Color is required and has to be a string',
+        status: 400,
+      });
+    }
 
     const result = await prismadb.product.createMany({
       data: {
@@ -58,7 +109,7 @@ export async function POST(
         colorId,
       },
     });
-    return NextResponse.json({ status: 201, body: { result } });
+    return NextResponse.json(result, { status: 201 });
   } catch (err) {
     if (err instanceof PrismaClientValidationError) {
       const errorMessage = err.message;
@@ -69,8 +120,6 @@ export async function POST(
   }
 }
 
-/* ----------GET------------ */
-
 export async function GET(
   request: Request,
   { params }: { params: { storeId: string } },
@@ -78,17 +127,8 @@ export async function GET(
   try {
     const { storeId } = params;
 
-    const store = await prismadb.store.findUnique({
-      where: {
-        id: storeId,
-      },
-    });
-
-    if (!store) {
-      return NextResponse.json({
-        status: 404,
-        body: { message: `Store with ID ${storeId} not found` },
-      });
+    if (!storeId) {
+      return NextResponse.json({ error: 'StoreId is required', status: 400 });
     }
 
     const products = await prismadb.product.findMany({
@@ -101,9 +141,9 @@ export async function GET(
   } catch (err) {
     if (err instanceof PrismaClientKnownRequestError) {
       const errorMessage = err.message;
-      return NextResponse.json({ status: 400, body: { errorMessage } });
+      return NextResponse.json({ status: 400, errorMessage });
     } else {
-      return NextResponse.json({ status: 500, body: { err } });
+      return NextResponse.json({ status: 500, err });
     }
   }
 }

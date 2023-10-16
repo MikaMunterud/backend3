@@ -13,6 +13,13 @@ export async function GET(
   try {
     const { colorId } = params;
 
+    if (!colorId) {
+      return NextResponse.json({
+        error: 'ColorId is required.',
+        status: 400,
+      });
+    }
+
     const color = await prismadb.color.findUnique({
       where: {
         id: colorId,
@@ -36,7 +43,20 @@ export async function DELETE(
   { params }: { params: { colorId: string } },
 ) {
   try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
+
     const { colorId } = params;
+
+    if (!colorId) {
+      return NextResponse.json({
+        error: 'ColorId is required.',
+        status: 400,
+      });
+    }
 
     const result = await prismadb.color.delete({
       where: {
@@ -59,9 +79,41 @@ export async function PATCH(
   { params }: { params: { colorId: string } },
 ) {
   try {
-    const { name, value } = await request.json();
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
 
     const { colorId } = params;
+
+    if (!colorId) {
+      return NextResponse.json({
+        error: 'ColorId is required.',
+        status: 400,
+      });
+    }
+
+    interface Body {
+      name: string;
+      value: string;
+    }
+
+    const { name, value }: Body = await request.json();
+
+    if (!name) {
+      return NextResponse.json(
+        { error: 'Name is required and has to be a string' },
+        { status: 400 },
+      );
+    }
+
+    if (!value) {
+      return NextResponse.json(
+        { error: 'Value is required and has to be a string' },
+        { status: 400 },
+      );
+    }
 
     const result = await prismadb.color.updateMany({
       where: {

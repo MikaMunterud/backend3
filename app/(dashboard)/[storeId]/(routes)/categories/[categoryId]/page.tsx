@@ -14,17 +14,7 @@ import CategoryForm from './components/category-form';
 import { AlertModal } from '@/components/modals/alert-modal';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
-
-type CategoryIdProps = {
-  id: string;
-  name: string;
-  billboardId: string;
-};
-
-type BillboardProps = {
-  id: string;
-  name: string;
-}[];
+import { Billboard, Category } from '@/types';
 
 export default function CategoryId() {
   const params = useParams();
@@ -33,8 +23,8 @@ export default function CategoryId() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [initialData, setInitialData] = useState<CategoryIdProps | null>(null);
-  const [billboards, setBillboards] = useState<BillboardProps | []>([]);
+  const [initialData, setInitialData] = useState<Category | null>(null);
+  const [billboards, setBillboards] = useState([]);
 
   const newCategory: boolean = params.categoryId === 'new';
 
