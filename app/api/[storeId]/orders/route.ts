@@ -26,17 +26,27 @@ export async function POST(
             email: string;
             phone: number;//int??
             storeId: string;
+            orderItems: [{
+                orderId: string;
+                productId: string;
+            }]
         }
 
-        const { name, adress, email, phone }: Body = await request.json();
+        const { name, adress, email, phone, orderItems }: Body = await request.json();
 
-        const result = await prismadb.order.create({
+        const result = await prismadb.order.createMany({
             data: {
                 name,
                 adress,
                 email,
                 phone,
-                storeId
+                storeId,
+                orderItems: {
+                    create: [
+                        { orderId: orderItems[0].orderId },
+                        { productId: orderItems[0].productId }
+                    ]
+                }
             },
         });
         return NextResponse.json(result, { status: 201 });
