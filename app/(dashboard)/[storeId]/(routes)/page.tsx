@@ -4,10 +4,6 @@ import { DollarSign, CreditCard, Package } from 'lucide-react';
 import Heading from '@/components/ui/heading';
 
 export default function Dashboard() {
-  const value1: string = 'Value 1';
-  /*   const value2: string = 'Value 2';
-  const value3: string = 'Value 3'; */
-
   return (
     <>
       <Heading title="Dashboard" description="Overview of your store" />
