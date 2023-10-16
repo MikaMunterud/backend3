@@ -27,8 +27,7 @@ export default function Sizes() {
         try {
           const response = await axios.get(`/api/${params.storeId}/sizes`);
 
-          //this might need to be changed depending on how the data is sent from the api route
-          const data = await response.data.body.result;
+          const data = await response.data;
 
           setSizes(data);
         } catch (error) {
