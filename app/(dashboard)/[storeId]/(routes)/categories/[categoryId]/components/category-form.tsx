@@ -28,11 +28,13 @@ import {
 
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { Billboard, Category } from '@/types';
 
 const formSchema = z.object({
   name: z
     .string()
-    .min(2, { message: 'Category name must be at least 2 characters.' }),
+    .min(1, { message: 'Category name must be at least 1 characters.' })
+    .max(20, { message: 'Category name must be at most 20 characters.' }),
   billboardId: z
     .string()
     .min(1, { message: 'Category name must have a billboard.' }),
@@ -41,8 +43,8 @@ const formSchema = z.object({
 type CategoryFormValues = z.infer<typeof formSchema>;
 
 interface CategoryFormProps {
-  initialData: { id: string; name: string; billboardId: string } | null;
-  billboards: { id: string; name: string }[] | [];
+  initialData: Category | null;
+  billboards: Billboard[] | [];
 }
 
 export default function CategoryForm({
@@ -51,10 +53,9 @@ export default function CategoryForm({
 }: CategoryFormProps) {
   const params = useParams();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   let defaultValues;
-
-  const [loading, setLoading] = useState(false);
 
   if (initialData) {
     defaultValues = {
@@ -80,7 +81,7 @@ export default function CategoryForm({
           data,
         );
 
-        toast.success('Size updated.');
+        toast.success('Category updated.');
       } else {
         await axios.post(`/api/${params.storeId}/categories`, data);
         toast.success('Category created.');
