@@ -5,6 +5,7 @@ export type Product = {
   colorId: string;
   created: Date;
   img: string;
+  description: string;
   isArchived: boolean;
   isFeatured: boolean;
   price: number;
