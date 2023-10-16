@@ -96,6 +96,7 @@ model Billboard {
 
 model Order {
   id          String        @id @default(uuid())
+  name        String
   adress      String
   email       String
   phone       Int
