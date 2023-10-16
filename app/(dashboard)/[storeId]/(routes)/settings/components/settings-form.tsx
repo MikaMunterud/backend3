@@ -22,9 +22,12 @@ import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
 const formSchema = z.object({
-  name: z.string().min(1, {
-    message: 'Store name must be at least 1 characters.',
-  }),
+  name: z
+    .string()
+    .min(1, {
+      message: 'Store name must be at least 1 characters.',
+    })
+    .max(20, { message: 'Store name must be at most 50 characters.' }),
 });
 
 type SettingsFormValues = z.infer<typeof formSchema>;
@@ -52,9 +55,8 @@ export default function SettingsForm({ initialData }: SettingsFormProps) {
 
       await axios.patch(`/api/stores/${params.storeId}`, { name });
 
-      router.refresh();
-      router.push(`/${params.storeId}/`);
-
+      window.location.reload();
+      router.push(`/${params.storeId}/settings`);
       toast.success('Store name updated.');
     } catch (error: any) {
       toast.error(
