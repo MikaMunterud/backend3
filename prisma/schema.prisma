@@ -12,7 +12,7 @@ datasource db {
 }
 
 model Store {
-  id          String      @id @default(uuid())
+  id          String        @id @default(uuid())
   name        String
   userId      String
   products    Product[]     @relation("Store-Product")
@@ -20,7 +20,7 @@ model Store {
   size        Size[]        @relation("Store-Size")
   billboard   Billboard[]   @relation("Store-Billboard")
   colors      Color[]       @relation("Store-Color")
-  orders      Order[]      @relation("Store-Order")
+  orders      Order[]       @relation("Store-Order")
 }
 
 model Product {
@@ -118,11 +118,6 @@ model OrderItem {
   @@index([orderId])
   @@index([productId])
 }
-
-
-
-
-
 
 
 
