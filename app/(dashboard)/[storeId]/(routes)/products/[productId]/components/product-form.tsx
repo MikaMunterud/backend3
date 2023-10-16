@@ -33,7 +33,10 @@ import { Textarea } from '@/components/ui/textarea';
 
 // Define the form schema. This will be used to validate the form values.
 const formSchema = z.object({
-  name: z.string().min(1, { message: 'Name must be at least one character.' }),
+  name: z
+    .string()
+    .min(1, { message: 'Name must be at least one character.' })
+    .max(20, { message: 'Name must be less than 50 characters.' }),
   img: z
     .object({ url: z.string() })
     .array()
@@ -43,7 +46,10 @@ const formSchema = z.object({
     .string()
     .min(1, { message: 'Description must be at least one character.' })
     .max(200, { message: 'Description must be less than 200 characters.' }),
-  price: z.coerce.number().min(0.1),
+  price: z.coerce
+    .number()
+    .min(0.1, { message: 'Price is required' })
+    .max(999999.99, { message: 'Price must be less than 1 000 000.' }),
   categoryId: z.string().min(1, { message: 'Category is required.' }),
   colorId: z.string().min(1, { message: 'Color is required.' }),
   sizeId: z.string().min(1, { message: 'Size is required.' }),
