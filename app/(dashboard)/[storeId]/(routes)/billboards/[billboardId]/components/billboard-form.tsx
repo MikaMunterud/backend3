@@ -24,8 +24,11 @@ import toast from 'react-hot-toast';
 
 // Define the form schema. This will be used to validate the form values.
 const formSchema = z.object({
-  name: z.string().min(1, { message: 'Name must be at least one character.' }),
-  image: z.string().min(1, { message: 'At least one image is required.' }),
+  name: z
+    .string()
+    .min(1, { message: 'Name must be at least one character.' })
+    .max(50, { message: 'Name must be less than 50 characters.' }),
+  img: z.string().min(1, { message: 'At least one image is required.' }),
 });
 
 type BillboardFormValues = z.infer<typeof formSchema>;
@@ -35,16 +38,16 @@ interface BillboardFormProps {
 }
 
 export function BillboardForm({ initialData }: BillboardFormProps) {
-  const [loading, setLoading] = useState(false);
   const params = useParams();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   let defaultValues;
 
   if (initialData) {
     defaultValues = {
       name: initialData.name,
-      image: initialData.image,
+      img: initialData.img,
     };
   }
 
@@ -52,7 +55,7 @@ export function BillboardForm({ initialData }: BillboardFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues || {
       name: '',
-      image: '',
+      img: '',
     },
   });
 
@@ -90,7 +93,7 @@ export function BillboardForm({ initialData }: BillboardFormProps) {
         >
           <FormField
             control={form.control}
-            name="image"
+            name="img"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Background image</FormLabel>
