@@ -40,7 +40,6 @@ export default function Settings() {
         try {
           const response = await axios.get(`/api/stores/${params.storeId}/`);
 
-          //this might need to be changed depending on how the data is sent from the api route
           const data = await response.data;
 
           setInitialData(data);
