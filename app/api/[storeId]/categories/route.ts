@@ -8,19 +8,16 @@ export async function POST(
   { params }: { params: { storeId: string } },
 ) {
   try {
-    //const { userId } = auth()
-    const { storeId } = params;
+    const { userId } = auth();
 
-    interface Body {
-      name: string;
-      billboardId: string;
+    if (!userId) {
+      return NextResponse.json({
+        body: { error: 'Not authorized' },
+        status: 401,
+      });
     }
 
-    const { name, billboardId }: Body = await request.json();
-
-    // if (!userId) {
-    //   return NextResponse.json({ body: {error: 'Not authorized'}, status: 401 })
-    // }
+    const { storeId } = params;
 
     if (!storeId) {
       return NextResponse.json(
@@ -28,6 +25,13 @@ export async function POST(
         { status: 400 },
       );
     }
+
+    interface Body {
+      name: string;
+      billboardId: string;
+    }
+
+    const { name, billboardId }: Body = await request.json();
 
     if (!name) {
       return NextResponse.json(
@@ -50,7 +54,7 @@ export async function POST(
         billboardId,
       },
     });
-    return NextResponse.json({ status: 201, body: { result } });
+    return NextResponse.json(result, { status: 201 });
   } catch (err) {
     if (err instanceof PrismaClientValidationError) {
       const errorMessage = err.message;
@@ -67,6 +71,13 @@ export async function GET(
 ) {
   try {
     const { storeId } = params;
+
+    if (!storeId) {
+      return NextResponse.json(
+        { error: 'StoreId is required' },
+        { status: 400 },
+      );
+    }
 
     const categories = await prismadb.category.findMany({
       where: {

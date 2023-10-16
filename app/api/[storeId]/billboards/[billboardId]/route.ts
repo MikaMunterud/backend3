@@ -7,17 +7,18 @@ export async function GET(
   { params }: { params: { billboardId: string } },
 ) {
   try {
-    if (!params.billboardId) {
-      return new NextResponse('BillboardId is required', { status: 400 });
+    const { billboardId } = params;
+
+    if (!billboardId) {
+      return NextResponse.json({
+        error: 'BillboardId is required',
+        status: 400,
+      });
     }
 
     const result = await prismadb.billboard.findUnique({
       where: { id: params.billboardId },
     });
-
-    if (result === null) {
-      return new NextResponse('No product found', { status: 404 });
-    }
 
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
@@ -33,15 +34,20 @@ export async function DELETE(
     const { userId } = auth();
 
     if (!userId) {
-      return new NextResponse('Not authorized', { status: 401 });
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
     }
 
-    if (!params.billboardId) {
-      return new NextResponse('BillboardId is required', { status: 400 });
+    const { billboardId } = params;
+
+    if (!billboardId) {
+      return NextResponse.json({
+        error: 'BillboardId is required',
+        status: 400,
+      });
     }
 
     const result = await prismadb.billboard.delete({
-      where: { id: params.billboardId },
+      where: { id: billboardId },
     });
 
     return NextResponse.json(result, { status: 200 });
@@ -58,25 +64,41 @@ export async function PATCH(
     const { userId } = auth();
 
     if (!userId) {
-      return new NextResponse('Not authorized', { status: 401 });
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
     }
 
-    if (!params.billboardId) {
-      return new NextResponse('BillboardId is required', { status: 400 });
+    const { billboardId } = params;
+
+    if (!billboardId) {
+      return NextResponse.json({
+        error: 'BillboardId is required',
+        status: 400,
+      });
     }
 
     interface Body {
       name: string;
-      image: string;
+      img: string;
     }
 
-    const { name, image }: Body = await request.json();
+    const { name, img }: Body = await request.json();
+
+    if (!name) {
+      return NextResponse.json({
+        error: 'Name is required and has to be a string',
+        status: 400,
+      });
+    }
+
+    if (!img) {
+      return NextResponse.json({ error: 'Image is required.', status: 400 });
+    }
 
     const result = await prismadb.billboard.update({
-      where: { id: params.billboardId },
+      where: { id: billboardId },
       data: {
         name,
-        image,
+        img,
       },
     });
     return NextResponse.json(result, { status: 200 });

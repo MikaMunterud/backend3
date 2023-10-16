@@ -10,6 +10,10 @@ export async function GET(
   try {
     const { sizeId } = params;
 
+    if (!sizeId) {
+      return NextResponse.json({ error: 'SizeId is required.', status: 400 });
+    }
+
     const size = await prismadb.size.findUnique({
       where: {
         id: sizeId,
@@ -32,26 +36,36 @@ export async function PATCH(
   req: Request,
   { params }: { params: { sizeId: string } },
 ) {
-  /*     const { userId } = auth()
-    
-        if (!userId) {
-            return NextResponse.json({ error: 'Not authorized' }, { status: 401 })
-        } */
-
   try {
-    const body = await req.json();
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized.' }, { status: 401 });
+    }
+
     const { sizeId } = params;
 
-    const res = await prismadb.size.update({
+    if (!sizeId) {
+      return NextResponse.json({ error: 'SizeId is required.', status: 400 });
+    }
+
+    interface Body {
+      name: string;
+      value: string;
+    }
+
+    const { name, value }: Body = await req.json();
+
+    const result = await prismadb.size.update({
       where: { id: sizeId },
       data: {
-        name: body.name,
-        value: body.value,
+        name,
+        value,
       },
     });
-    return NextResponse.json(`${res.name} is now updated`, { status: 200 });
+    return NextResponse.json(result, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json({ error, status: 500 });
   }
 }
 
@@ -60,17 +74,17 @@ export async function DELETE(
   { params }: { params: { sizeId: string } },
 ) {
   try {
-    /*         const { userId } = auth()
-        
-                if (!userId) {
-                    return NextResponse.json({ error: 'Not authorized' }, { status: 401 })
-                } */
+    const { userId } = auth();
 
-    if (!params.sizeId) {
-      return new NextResponse('sizeId required', { status: 400 });
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
     }
 
     const { sizeId } = params;
+
+    if (!sizeId) {
+      return NextResponse.json({ error: 'SizeId is required', status: 400 });
+    }
 
     const res = await prismadb.size.delete({
       where: { id: sizeId },
