@@ -100,7 +100,7 @@ model Order {
   adress      String
   email       String
   phone       Int
-  toaltPrice  Decimal
+  totalPrice Decimal
   isPaid      Boolean
   storeId     String
   store       Store         @relation("Store-Order", fields: [storeId], references: [id])
