@@ -99,9 +99,9 @@ model Order {
   name        String
   adress      String
   email       String
-  phone       Int
-  totalPrice Decimal
-  isPaid      Boolean
+  phone       String
+  totalPrice  Decimal
+  isPaid      Boolean     @default(false)
   storeId     String
   store       Store         @relation("Store-Order", fields: [storeId], references: [id])
   orderItems  OrderItem[]   @relation("Order-OrderItem")
