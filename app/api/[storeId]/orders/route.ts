@@ -22,14 +22,13 @@ export async function POST(
             email: string;
             phone: number;
             totalPrice: number;
-            isPaid: boolean;
             storeId: string;
             orderItems: {
                 productId: string;
             }[]
         }
 
-        const { name, adress, email, phone, totalPrice, isPaid, orderItems }: Body = await request.json();
+        const { name, adress, email, phone, totalPrice, orderItems }: Body = await request.json();
 
         const result = await prismadb.order.create({
             data: {
@@ -38,7 +37,7 @@ export async function POST(
                 email,
                 phone,
                 totalPrice,
-                isPaid,
+                isPaid: false,
                 storeId,
             },
         });
