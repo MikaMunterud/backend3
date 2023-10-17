@@ -30,6 +30,7 @@ export async function POST(
 
         const { name, adress, email, phone, totalPrice, orderItems }: Body = await request.json();
 
+
         const result = await prismadb.order.create({
             data: {
                 name,
