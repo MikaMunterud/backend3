@@ -24,7 +24,7 @@ export async function POST(
             name: string;
             adress: string;
             email: string;
-            phone: number;//int??
+            phone: number;
             storeId: string;
             orderItems: [{
                 orderId: string;
