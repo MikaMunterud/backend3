@@ -27,6 +27,7 @@ export async function POST(
             adress: string;
             email: string;
             phone: number;
+            totalPrice: number;
             isPaid: boolean;
             storeId: string;
             orderItems: {
@@ -34,7 +35,7 @@ export async function POST(
             }[]
         }
 
-        const { name, adress, email, phone, isPaid, orderItems }: Body = await request.json();
+        const { name, adress, email, phone, totalPrice, isPaid, orderItems }: Body = await request.json();
 
         const result = await prismadb.order.create({
             data: {
@@ -42,9 +43,9 @@ export async function POST(
                 adress,
                 email,
                 phone,
+                totalPrice,
                 isPaid,
                 storeId,
-
             },
         });
 
@@ -109,6 +110,19 @@ export async function DELETE(request: Request, { params }: { params: { orderId: 
             const errorMessage = error.message;
             return NextResponse.json({ status: 400, body: { errorMessage } });
         }
+        return NextResponse.json({ error, status: 500 });
+    }
+}
+
+export async function GET(request: Request) {
+    try {
+
+        const orders = await prismadb.order.findMany();
+
+
+        return NextResponse.json(orders, { status: 200 });
+    } catch (error) {
+
         return NextResponse.json({ error, status: 500 });
     }
 }
