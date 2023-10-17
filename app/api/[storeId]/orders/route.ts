@@ -10,11 +10,11 @@ export async function POST(
 ) {
     try {
 
-        const { userId } = auth();
-
-        if (!userId) {
-            return NextResponse.json({ error: 'Not authorized.' }, { status: 401 });
-        }
+        /*         const { userId } = auth();
+        
+                if (!userId) {
+                    return NextResponse.json({ error: 'Not authorized.' }, { status: 401 });
+                } */
 
         const { storeId } = params;
 
