@@ -10,11 +10,11 @@ export async function POST(
 ) {
     try {
 
-        /*         const { userId } = auth();
-        
-                if (!userId) {
-                    return NextResponse.json({ error: 'Not authorized.' }, { status: 401 });
-                } */
+        const { userId } = auth();
+
+        if (!userId) {
+            return NextResponse.json({ error: 'Not authorized.' }, { status: 401 });
+        }
 
         const { storeId } = params;
 
@@ -64,8 +64,6 @@ export async function POST(
         const res = await prismadb.orderItem.createMany({
             data: orderItemsData,
         });
-
-        console.log(res)
 
 
         return NextResponse.json({ res, result }, { status: 201 });
