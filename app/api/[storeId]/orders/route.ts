@@ -20,7 +20,7 @@ export async function POST(
             name: string;
             adress: string;
             email: string;
-            phone: number;
+            phone: string;
             totalPrice: number;
             storeId: string;
             orderItems: {
@@ -37,7 +37,6 @@ export async function POST(
                 email,
                 phone,
                 totalPrice,
-                isPaid: false,
                 storeId,
             },
         });
