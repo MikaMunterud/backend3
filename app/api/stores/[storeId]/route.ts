@@ -119,12 +119,6 @@ export async function GET(
   { params }: { params: { storeId: string } },
 ) {
   try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Not authorized.', status: 401 });
-    }
-
     const { storeId } = params;
 
     if (!storeId) {
@@ -134,7 +128,6 @@ export async function GET(
     const result = await prismadb.store.findFirst({
       where: {
         id: storeId,
-        userId,
       },
       select: {
         name: true,
