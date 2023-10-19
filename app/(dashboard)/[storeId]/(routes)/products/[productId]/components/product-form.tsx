@@ -109,6 +109,21 @@ export function ProductForm({
 
   // 2. Define a submit handler.
   async function onSubmit(values: ProductFormValues) {
+    const { isFeatured, isArchived } = values;
+
+    // Custom validation to ensure only one of isFeatured or isArchived can be true
+    if (isFeatured && isArchived) {
+      form.setError('isFeatured', {
+        type: 'manual',
+        message: 'Only one of Featured or Archived can be true.',
+      });
+      form.setError('isArchived', {
+        type: 'manual',
+        message: 'Only one of Featured or Archived can be true.',
+      });
+      return;
+    }
+
     //this uses only the first image of a product
     const product = {
       name: values.name,
@@ -347,6 +362,11 @@ export function ProductForm({
                     <FormDescription>
                       This product will appear on the home page
                     </FormDescription>
+                    {form.formState.errors.isFeatured && (
+                      <FormMessage>
+                        {form.formState.errors.isFeatured.message}
+                      </FormMessage>
+                    )}
                   </div>
                 </FormItem>
               )}
@@ -370,6 +390,11 @@ export function ProductForm({
                     <FormDescription>
                       This product will not appear anywhere in the store.
                     </FormDescription>
+                    {form.formState.errors.isArchived && (
+                      <FormMessage>
+                        {form.formState.errors.isArchived.message}
+                      </FormMessage>
+                    )}
                   </div>
                 </FormItem>
               )}

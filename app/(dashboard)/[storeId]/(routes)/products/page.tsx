@@ -73,7 +73,7 @@ export default function Products() {
           return {
             id: product.id,
             name: product.name,
-            price: product.price,
+            price: Number(product.price).toFixed(2),
             category: categories.find(function (category: Category) {
               return category.id === product.categoryId;
             })?.name,
