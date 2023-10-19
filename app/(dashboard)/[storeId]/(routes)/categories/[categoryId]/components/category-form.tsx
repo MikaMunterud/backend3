@@ -82,16 +82,23 @@ export default function CategoryForm({
         );
 
         toast.success('Category updated.');
+        router.push(`/${params.storeId}/categories`);
       } else {
-        await axios.post(`/api/${params.storeId}/categories`, data);
-        toast.success('Category created.');
+        const test = await axios.post(`/api/${params.storeId}/categories`, data);
+        if (test.data.status === 500) {
+          toast.error('Category already exists.');
+        } else {
+          toast.success('Category created.');
+          router.refresh();
+          router.push(`/${params.storeId}/categories`);
+        }
       }
-      router.refresh();
-      router.push(`/${params.storeId}/categories`);
+
     } catch (error: any) {
       toast.error(
         'Something went wrong. Category not updated. Please try again.',
       );
+
     } finally {
       setLoading(false);
     }
