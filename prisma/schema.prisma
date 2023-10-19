@@ -46,6 +46,8 @@ model Product {
   @@index([categoryId])
   @@index([sizeId])
   @@index([colorId])
+
+  @@unique([name, storeId])
 }
 
 model Category {
@@ -59,28 +61,34 @@ model Category {
 
   @@index([storeId])
   @@index([billboardId])
+
+  @@unique([name, storeId])
 }
 
 model Size {
   id       String      @id @default(uuid())
-  name     String      @unique
-  value    String      @unique
+  name     String      
+  value    String      
   storeId  String
   store    Store       @relation("Store-Size", fields: [storeId], references: [id])
   products Product[]   @relation("Size-Product")
 
   @@index([storeId])
+
+  @@unique([name, value, storeId])
 }
 
 model Color {
   id        String      @id @default(uuid())
-  name      String      @unique
-  value     String      @unique
+  name      String      
+  value     String      
   storeId   String
   store    Store       @relation("Store-Color", fields: [storeId], references: [id])
   products Product[]   @relation("Color-Product")
 
   @@index([storeId])
+
+  @@unique([name, value, storeId])
 }
 
 model Billboard {
@@ -92,6 +100,8 @@ model Billboard {
   categories  Category[]  @relation("Billboard-Category")
 
   @@index([storeId])
+
+  @@unique([name, storeId])
 }
 
 model Order {
@@ -117,6 +127,7 @@ model OrderItem {
   order     Order       @relation("Order-OrderItem", fields: [orderId], references: [id])
   productId String
   product   Product     @relation("Product-OrderItem", fields: [productId], references: [id])
+  quantity  Int
 
   @@index([orderId])
   @@index([productId])
