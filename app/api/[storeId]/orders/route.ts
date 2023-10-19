@@ -23,6 +23,7 @@ export async function POST(
       storeId: string;
       orderItems: {
         productId: string;
+        quantity: number;
       }[];
     }
 
@@ -50,9 +51,8 @@ export async function POST(
     const orderItemsData = orderItems.map((item) => ({
       orderId: result.id,
       productId: item.productId,
+      quantity: item.quantity
     }));
-
-    console.log(orderItemsData);
 
     const res = await prismadb.orderItem.createMany({
       data: orderItemsData,
