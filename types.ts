@@ -1,4 +1,4 @@
-export type Product = {
+export interface Product {
   id: string;
   name: string;
   categoryId: string;
@@ -11,32 +11,45 @@ export type Product = {
   price: number;
   sizeId: string;
   storeId: string;
-};
+}
 
-export type Category = {
+export interface Category {
   id: string;
   name: string;
   storeId: string;
   billboardId: string;
-};
+}
 
-export type Size = {
+export interface Size {
   id: string;
   name: string;
   value: string;
   storeId: string;
-};
+}
 
-export type Color = {
+export interface Color {
   id: string;
   name: string;
   value: string;
   storeId: string;
-};
+}
 
-export type Billboard = {
+export interface Billboard {
   id: string;
   name: string;
   img: string;
   storeId: string;
-};
+}
+
+export interface Order {
+  id: string;
+  name: string;
+  email: string;
+  address: string;
+  phone: string;
+  totalPrice: number;
+  isPaid: boolean;
+  store: string;
+  created: Date;
+  updated: Date;
+}

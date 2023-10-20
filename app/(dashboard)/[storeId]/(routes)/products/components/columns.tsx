@@ -6,7 +6,7 @@ import { ColumnDef } from '@tanstack/react-table';
 export type ProductColumn = {
   id: string;
   name: string;
-  price: number;
+  price: string;
   category: string | undefined;
   size: string | undefined;
   color: string | undefined;
