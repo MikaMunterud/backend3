@@ -110,12 +110,15 @@ export async function POST(
       },
     });
     return NextResponse.json(result, { status: 201 });
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof PrismaClientValidationError) {
       const errorMessage = err.message;
-      return NextResponse.json({ status: 400, body: { errorMessage } });
-    } else {
-      return NextResponse.json({ status: 500, body: { err } });
+      return NextResponse.json({ errorMessage }, { status: 400 });
+    } else if (err.code === 'P2002') {
+      return NextResponse.json({ err }, { status: 409 });
+    }
+    else {
+      return NextResponse.json({ err }, { status: 500 });
     }
   }
 }

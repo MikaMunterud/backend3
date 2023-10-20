@@ -144,24 +144,22 @@ export function ProductForm({
           `/api/${params.storeId}/products/${params.productId}`,
           product,
         );
-
         toast.success('Product updated.');
         router.push(`/${params.storeId}/products`);
       } else {
-        const res = await axios.post(`/api/${params.storeId}/products`, product);
-        if (res.data.status === 500) {
-          toast.error('Product already exists.');
-        } else {
-          toast.success('Product created.');
-          router.refresh();
-          router.push(`/${params.storeId}/products`);
-        }
+        await axios.post(`/api/${params.storeId}/products`, product);
+        toast.success('Product created.');
+        router.refresh();
+        router.push(`/${params.storeId}/products`);
       }
-
     } catch (error: any) {
-      toast.error(
-        'Something went wrong. Product not updated. Please try again.',
-      );
+      if (error.response.status === 409) {
+        toast.error('Product already exists.');
+      } else {
+        toast.error(
+          'Something went wrong. Product not updated. Please try again.',
+        );
+      }
     } finally {
       setLoading(false);
     }
