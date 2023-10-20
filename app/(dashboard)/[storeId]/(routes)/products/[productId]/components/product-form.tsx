@@ -146,12 +146,18 @@ export function ProductForm({
         );
 
         toast.success('Product updated.');
+        router.push(`/${params.storeId}/products`);
       } else {
-        await axios.post(`/api/${params.storeId}/products`, product);
-        toast.success('Product created.');
+        const res = await axios.post(`/api/${params.storeId}/products`, product);
+        if (res.data.status === 500) {
+          toast.error('Product already exists.');
+        } else {
+          toast.success('Product created.');
+          router.refresh();
+          router.push(`/${params.storeId}/products`);
+        }
       }
-      router.refresh();
-      router.push(`/${params.storeId}/products`);
+
     } catch (error: any) {
       toast.error(
         'Something went wrong. Product not updated. Please try again.',
