@@ -61,16 +61,22 @@ export default function ColorForm({ initialData }: ColorFormProps) {
           `/api/${params.storeId}/colors/${params.colorId}`,
           data,
         );
-
         toast.success('Color updated.');
+        router.push(`/${params.storeId}/colors`);
       } else {
         await axios.post(`/api/${params.storeId}/colors`, data);
         toast.success('Color created.');
+        router.refresh();
+        router.push(`/${params.storeId}/colors`);
       }
-      router.refresh();
-      router.push(`/${params.storeId}/colors`);
     } catch (error: any) {
-      toast.error('Something went wrong. Color not updated. Please try again.');
+      if (error.response.status === 409) {
+        toast.error('Color already exists.');
+      } else {
+        toast.error(
+          'Something went wrong. Color not updated. Please try again.',
+        );
+      }
     } finally {
       setLoading(false);
     }
