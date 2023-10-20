@@ -59,7 +59,6 @@ export function BillboardForm({ initialData }: BillboardFormProps) {
     },
   });
 
-  //havent had the chance to test this, but should be same to the other error problems we had. So I fixed it the same way. 
   async function onSubmit(values: BillboardFormValues) {
     try {
       setLoading(true);
