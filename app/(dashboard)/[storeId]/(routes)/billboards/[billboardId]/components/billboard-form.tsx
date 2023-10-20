@@ -59,6 +59,7 @@ export function BillboardForm({ initialData }: BillboardFormProps) {
     },
   });
 
+  //havent had the chance to test this, but should be same to the other error problems we had. So I fixed it the same way. 
   async function onSubmit(values: BillboardFormValues) {
     try {
       setLoading(true);
@@ -69,12 +70,18 @@ export function BillboardForm({ initialData }: BillboardFormProps) {
         );
 
         toast.success('Billboard updated.');
+        router.push(`/${params.storeId}/billboards`);
       } else {
-        await axios.post(`/api/${params.storeId}/billboards`, values);
-        toast.success('Billboard created.');
+        const res = await axios.post(`/api/${params.storeId}/billboards`, values);
+        if (res.data.status === 500) {
+          toast.error('Billboard already exists.');
+        } else {
+          toast.success('billboard created.');
+          router.refresh();
+          router.push(`/${params.storeId}/billboards`);
+        }
       }
-      router.refresh();
-      router.push(`/${params.storeId}/billboards`);
+
     } catch (error: any) {
       toast.error(
         'Something went wrong. Billboard not updated. Please try again.',
