@@ -84,8 +84,8 @@ export default function CategoryForm({
         toast.success('Category updated.');
         router.push(`/${params.storeId}/categories`);
       } else {
-        const test = await axios.post(`/api/${params.storeId}/categories`, data);
-        if (test.data.status === 500) {
+        const res = await axios.post(`/api/${params.storeId}/categories`, data);
+        if (res.data.status === 500) {
           toast.error('Category already exists.');
         } else {
           toast.success('Category created.');
