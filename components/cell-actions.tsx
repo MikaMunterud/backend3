@@ -59,6 +59,12 @@ export function CellAction({ route, id }: CellActionProps) {
       'Something went wrong, product was not deleted. Please try again.';
   }
 
+  if (route === 'orders') {
+    title = 'Order';
+    description =
+      'Something went wrong, order was not deleted. Please try again.';
+  }
+
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
     toast.success(`${title} Id copied to the clipboard.`);
@@ -108,7 +114,7 @@ export function CellAction({ route, id }: CellActionProps) {
             onClick={() => router.push(`/${params.storeId}/${route}/${id}`)}
           >
             <Edit className="mr-2 h-4 w-4" />
-            Update
+            {route === 'orders' ? 'View' : 'Update'}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" />
