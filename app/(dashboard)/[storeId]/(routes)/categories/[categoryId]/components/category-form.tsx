@@ -76,7 +76,7 @@ export default function CategoryForm({
     try {
       setLoading(true);
       if (initialData) {
-        const result = await axios.patch(
+        await axios.patch(
           `/api/${params.storeId}/categories/${params.categoryId}`,
           data,
         );
