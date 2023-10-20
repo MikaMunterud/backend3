@@ -55,8 +55,7 @@ export function CellAction({ route, id }: CellActionProps) {
 
   if (route === 'products') {
     title = 'Product';
-    description =
-      'Something went wrong, product was not deleted. Please try again.';
+    description = 'Make sure to remove all orders with this product first.';
   }
 
   if (route === 'orders') {
