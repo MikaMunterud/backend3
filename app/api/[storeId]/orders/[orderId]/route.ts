@@ -8,6 +8,12 @@ export async function GET(
   { params }: { params: { storeId: string; orderId: string } }
 ){
   try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
+
     const { storeId } = params;
 
     if (!storeId) {
@@ -42,6 +48,12 @@ export async function PATCH(
   { params }: { params: { storeId: string; orderId: string } }
 ) {
   try {
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
+    
     const { storeId } = params;
 
     if (!storeId) {
