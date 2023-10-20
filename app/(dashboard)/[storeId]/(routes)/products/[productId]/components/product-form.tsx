@@ -155,6 +155,8 @@ export function ProductForm({
     } catch (error: any) {
       if (error.response.status === 409) {
         toast.error('Product already exists.');
+      } else if (error.response.status === 414) {
+        toast.error('The URL for image is too long.');
       } else {
         toast.error(
           'Something went wrong. Product not updated. Please try again.',

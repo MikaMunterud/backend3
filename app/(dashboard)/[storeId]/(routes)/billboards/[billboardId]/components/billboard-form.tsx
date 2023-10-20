@@ -78,6 +78,8 @@ export function BillboardForm({ initialData }: BillboardFormProps) {
     } catch (error: any) {
       if (error.response.status === 409) {
         toast.error('Billboard already exists.');
+      } else if (error.response.status === 414) {
+        toast.error('The URL for image is too long.');
       } else {
         toast.error(
           'Something went wrong. Billboard not updated. Please try again.',
