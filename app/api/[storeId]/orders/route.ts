@@ -1,17 +1,17 @@
-import prismadb from '@/lib/prismadb';
-import { auth } from '@clerk/nextjs';
-import { NextResponse } from 'next/server';
-import { PrismaClientValidationError } from '@prisma/client/runtime/library';
+import prismadb from "@/lib/prismadb";
+import { auth } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
+import { PrismaClientValidationError } from "@prisma/client/runtime/library";
 
 export async function POST(
   request: Request,
-  { params }: { params: { storeId: string } },
+  { params }: { params: { storeId: string } }
 ) {
   try {
     const { storeId } = params;
 
     if (!storeId) {
-      return NextResponse.json({ error: 'StoreId is required.', status: 400 });
+      return NextResponse.json({ error: "StoreId is required.", status: 400 });
     }
 
     interface Body {
@@ -43,7 +43,7 @@ export async function POST(
 
     if (!result) {
       return NextResponse.json({
-        error: 'Order could not be created.',
+        error: "Order could not be created.",
         status: 400,
       });
     }
@@ -70,7 +70,7 @@ export async function POST(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { orderId: string } },
+  { params }: { params: { orderId: string } }
 ) {
   try {
     /* Add authentication logic if needed */
@@ -78,7 +78,7 @@ export async function DELETE(
     const { orderId } = await request.json();
 
     if (!orderId) {
-      return NextResponse.json({ error: 'Order ID is required.', status: 400 });
+      return NextResponse.json({ error: "Order ID is required.", status: 400 });
     }
     const res = await prismadb.orderItem.deleteMany({
       where: {
@@ -93,13 +93,13 @@ export async function DELETE(
     });
 
     if (!deleteResult) {
-      return NextResponse.json({ error: 'Order not found.', status: 404 });
+      return NextResponse.json({ error: "Order not found.", status: 404 });
     }
 
     // If the delete operation was successful, you can return a success response
     return NextResponse.json(
-      { message: 'Order deleted successfully.' },
-      { status: 200 },
+      { message: "Order deleted successfully." },
+      { status: 200 }
     );
   } catch (error) {
     if (error instanceof PrismaClientValidationError) {
