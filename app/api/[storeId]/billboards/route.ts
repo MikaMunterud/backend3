@@ -48,8 +48,14 @@ export async function POST(
       },
     });
     return NextResponse.json(result, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error, status: 500 });
+  } catch (error: any) {
+    if (error.code === 'P2002') {
+      return NextResponse.json({ error }, { status: 409 });
+    } else if (error.code === 'P2000') {
+      return NextResponse.json({ error }, { status: 414 });
+    } else {
+      return NextResponse.json({ error }, { status: 500 });
+    }
   }
 }
 

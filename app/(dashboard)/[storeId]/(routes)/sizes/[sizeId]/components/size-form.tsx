@@ -70,16 +70,22 @@ export default function SizeForm({ initialData }: SizeFormProps) {
           `/api/${params.storeId}/sizes/${params.sizeId}`,
           data,
         );
-
         toast.success('Size updated.');
+        router.push(`/${params.storeId}/sizes`);
       } else {
         await axios.post(`/api/${params.storeId}/sizes`, data);
         toast.success('Size created.');
+        router.refresh();
+        router.push(`/${params.storeId}/sizes`);
       }
-      router.refresh();
-      router.push(`/${params.storeId}/sizes`);
     } catch (error: any) {
-      toast.error('Something went wrong. Size not updated. Please try again.');
+      if (error.response.status === 409) {
+        toast.error('Size already exists.');
+      } else {
+        toast.error(
+          'Something went wrong. Size not updated. Please try again.',
+        );
+      }
     } finally {
       setLoading(false);
     }
