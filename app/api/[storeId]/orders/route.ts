@@ -1,17 +1,17 @@
-import prismadb from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs";
-import { NextResponse } from "next/server";
-import { PrismaClientValidationError } from "@prisma/client/runtime/library";
+import prismadb from '@/lib/prismadb';
+import { auth } from '@clerk/nextjs';
+import { NextResponse } from 'next/server';
+import { PrismaClientValidationError } from '@prisma/client/runtime/library';
 
 export async function POST(
   request: Request,
-  { params }: { params: { storeId: string } }
+  { params }: { params: { storeId: string } },
 ) {
   try {
     const { storeId } = params;
 
     if (!storeId) {
-      return NextResponse.json({ error: "StoreId is required.", status: 400 });
+      return NextResponse.json({ error: 'StoreId is required.', status: 400 });
     }
 
     interface Body {
@@ -43,7 +43,7 @@ export async function POST(
 
     if (!result) {
       return NextResponse.json({
-        error: "Order could not be created.",
+        error: 'Order could not be created.',
         status: 400,
       });
     }
@@ -51,7 +51,7 @@ export async function POST(
     const orderItemsData = orderItems.map((item) => ({
       orderId: result.id,
       productId: item.productId,
-      quantity: item.quantity
+      quantity: item.quantity,
     }));
 
     const res = await prismadb.orderItem.createMany({
@@ -70,15 +70,19 @@ export async function POST(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { orderId: string } }
+  { params }: { params: { orderId: string } },
 ) {
   try {
-    /* Add authentication logic if needed */
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
 
     const { orderId } = await request.json();
 
     if (!orderId) {
-      return NextResponse.json({ error: "Order ID is required.", status: 400 });
+      return NextResponse.json({ error: 'Order ID is required.', status: 400 });
     }
     const res = await prismadb.orderItem.deleteMany({
       where: {
@@ -93,13 +97,13 @@ export async function DELETE(
     });
 
     if (!deleteResult) {
-      return NextResponse.json({ error: "Order not found.", status: 404 });
+      return NextResponse.json({ error: 'Order not found.', status: 404 });
     }
 
     // If the delete operation was successful, you can return a success response
     return NextResponse.json(
-      { message: "Order deleted successfully." },
-      { status: 200 }
+      { message: 'Order deleted successfully.' },
+      { status: 200 },
     );
   } catch (error) {
     if (error instanceof PrismaClientValidationError) {
@@ -110,9 +114,24 @@ export async function DELETE(
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(
+  request: Request,
+  { params }: { params: { storeId: string } },
+) {
   try {
-    const orders = await prismadb.order.findMany();
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
+
+    const { storeId } = params;
+
+    if (!storeId) {
+      return NextResponse.json({ error: 'StoreId is required.', status: 400 });
+    }
+
+    const orders = await prismadb.order.findMany({ where: { storeId } });
 
     return NextResponse.json(orders, { status: 200 });
   } catch (error) {
