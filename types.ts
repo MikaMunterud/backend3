@@ -53,3 +53,11 @@ export interface Order {
   created: Date;
   updated: Date;
 }
+
+export interface OrderItem {
+  id: string;
+  orderId: string;
+  productId: string;
+  quantity: number;
+  price: number;
+}
