@@ -47,7 +47,7 @@ export async function POST(
       );
     }
 
-    const result = await prismadb.category.createMany({
+    const result = await prismadb.category.create({
       data: {
         name,
         storeId,
@@ -61,8 +61,7 @@ export async function POST(
       return NextResponse.json({ errorMessage }, { status: 400 });
     } else if (err.code === 'P2002') {
       return NextResponse.json({ err }, { status: 409 });
-    }
-    else {
+    } else {
       return NextResponse.json({ err }, { status: 500 });
     }
   }
