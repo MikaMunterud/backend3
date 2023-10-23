@@ -68,52 +68,6 @@ export async function POST(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { orderId: string } },
-) {
-  try {
-    const { userId } = auth();
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Not authorized', status: 401 });
-    }
-
-    const { orderId } = await request.json();
-
-    if (!orderId) {
-      return NextResponse.json({ error: 'Order ID is required.', status: 400 });
-    }
-    const res = await prismadb.orderItem.deleteMany({
-      where: {
-        orderId,
-      },
-    });
-    // Attempt to delete the order
-    const deleteResult = await prismadb.order.delete({
-      where: {
-        id: orderId,
-      },
-    });
-
-    if (!deleteResult) {
-      return NextResponse.json({ error: 'Order not found.', status: 404 });
-    }
-
-    // If the delete operation was successful, you can return a success response
-    return NextResponse.json(
-      { message: 'Order deleted successfully.' },
-      { status: 200 },
-    );
-  } catch (error) {
-    if (error instanceof PrismaClientValidationError) {
-      const errorMessage = error.message;
-      return NextResponse.json({ status: 400, body: { errorMessage } });
-    }
-    return NextResponse.json({ error, status: 500 });
-  }
-}
-
 export async function GET(
   request: Request,
   { params }: { params: { storeId: string } },
