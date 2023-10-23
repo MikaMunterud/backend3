@@ -67,18 +67,24 @@ export function BillboardForm({ initialData }: BillboardFormProps) {
           `/api/${params.storeId}/billboards/${params.billboardId}`,
           values,
         );
-
         toast.success('Billboard updated.');
+        router.push(`/${params.storeId}/billboards`);
       } else {
         await axios.post(`/api/${params.storeId}/billboards`, values);
         toast.success('Billboard created.');
+        router.refresh();
+        router.push(`/${params.storeId}/billboards`);
       }
-      router.refresh();
-      router.push(`/${params.storeId}/billboards`);
     } catch (error: any) {
-      toast.error(
-        'Something went wrong. Billboard not updated. Please try again.',
-      );
+      if (error.response.status === 409) {
+        toast.error('Billboard already exists.');
+      } else if (error.response.status === 414) {
+        toast.error('The URL for image is too long.');
+      } else {
+        toast.error(
+          'Something went wrong. Billboard not updated. Please try again.',
+        );
+      }
     } finally {
       setLoading(false);
     }

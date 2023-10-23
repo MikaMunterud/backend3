@@ -55,8 +55,13 @@ export function CellAction({ route, id }: CellActionProps) {
 
   if (route === 'products') {
     title = 'Product';
+    description = 'Make sure to remove all orders with this product first.';
+  }
+
+  if (route === 'orders') {
+    title = 'Order';
     description =
-      'Something went wrong, product was not deleted. Please try again.';
+      'Something went wrong, order was not deleted. Please try again.';
   }
 
   const onCopy = (id: string) => {
@@ -108,7 +113,7 @@ export function CellAction({ route, id }: CellActionProps) {
             onClick={() => router.push(`/${params.storeId}/${route}/${id}`)}
           >
             <Edit className="mr-2 h-4 w-4" />
-            Update
+            {route === 'orders' ? 'View' : 'Update'}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOpen(true)}>
             <Trash className="mr-2 h-4 w-4" />

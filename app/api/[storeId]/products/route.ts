@@ -95,7 +95,7 @@ export async function POST(
       });
     }
 
-    const result = await prismadb.product.createMany({
+    const result = await prismadb.product.create({
       data: {
         name,
         img,
@@ -110,12 +110,16 @@ export async function POST(
       },
     });
     return NextResponse.json(result, { status: 201 });
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof PrismaClientValidationError) {
       const errorMessage = err.message;
-      return NextResponse.json({ status: 400, body: { errorMessage } });
+      return NextResponse.json({ errorMessage }, { status: 400 });
+    } else if (err.code === 'P2002') {
+      return NextResponse.json({ err }, { status: 409 });
+    } else if (err.code === 'P2000') {
+      return NextResponse.json({ err }, { status: 414 });
     } else {
-      return NextResponse.json({ status: 500, body: { err } });
+      return NextResponse.json({ err }, { status: 500 });
     }
   }
 }

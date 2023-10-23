@@ -23,6 +23,7 @@ export async function POST(
       storeId: string;
       orderItems: {
         productId: string;
+        quantity: number;
       }[];
     }
 
@@ -50,9 +51,8 @@ export async function POST(
     const orderItemsData = orderItems.map((item) => ({
       orderId: result.id,
       productId: item.productId,
+      quantity: item.quantity,
     }));
-
-    console.log(orderItemsData);
 
     const res = await prismadb.orderItem.createMany({
       data: orderItemsData,
@@ -73,7 +73,11 @@ export async function DELETE(
   { params }: { params: { orderId: string } },
 ) {
   try {
-    /* Add authentication logic if needed */
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
 
     const { orderId } = await request.json();
 
@@ -110,9 +114,24 @@ export async function DELETE(
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(
+  request: Request,
+  { params }: { params: { storeId: string } },
+) {
   try {
-    const orders = await prismadb.order.findMany();
+    const { userId } = auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Not authorized', status: 401 });
+    }
+
+    const { storeId } = params;
+
+    if (!storeId) {
+      return NextResponse.json({ error: 'StoreId is required.', status: 400 });
+    }
+
+    const orders = await prismadb.order.findMany({ where: { storeId } });
 
     return NextResponse.json(orders, { status: 200 });
   } catch (error) {

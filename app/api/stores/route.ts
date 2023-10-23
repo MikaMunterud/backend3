@@ -20,9 +20,9 @@ export async function POST(req: Request) {
 
     const store = await prismadb.store.create({ data: { name, userId } });
 
-    return NextResponse.json(store);
+    return NextResponse.json(store, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error });
+    return NextResponse.json({ error, status: 500 });
   }
 }
 
@@ -36,8 +36,8 @@ export async function GET(req: Request) {
 
     const stores = await prismadb.store.findMany({ where: { userId } });
 
-    return NextResponse.json(stores);
+    return NextResponse.json(stores, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error });
+    return NextResponse.json({ error, status: 500 });
   }
 }
