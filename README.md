@@ -42,25 +42,38 @@ To configure the Dashboard application, you'll need to set up the necessary envi
 
 ### Clerk Authentication Configuration:
 
-```.env
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_cmVsaWV2ZWQtbW9sbHktMjEuY2xlcmsuYWNjb3VudHMuZGV2JA
-CLERK_SECRET_KEY=sk_test_GSvUKMaFsE3be52CYC50AuKrwvu6jiBNRpMo2DVVNn
+- **Clerk Publishable API Key** (Replace with your actual key):
+  - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Your Clerk Publishable API Key.
 
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: Your Clerk Publishable API Key (replace with your actual key).
-CLERK_SECRET_KEY: Your Clerk Secret API Key (replace with your actual key).
+- **Clerk Secret API Key** (Replace with your actual key):
+  - `CLERK_SECRET_KEY`: Your Clerk Secret API Key.
 
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+### Clerk Authentication URLs:
 
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="dweh5mia0"
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: Your Cloudinary cloud name (replace with your actual name).
-Database Configuration:
+- **URL for Signing In**:
+  - `NEXT_PUBLIC_CLERK_SIGN_IN_URL`: URL for signing in.
 
-DATABASE_URL='mysql://ltm3jmkhscur1owndkcm:pscale_pw_c5QjsF05Rb6uDOn9hUenhhIoTRLLI54nRSL1ImXRuP@aws.connect.psdb.cloud/backend3?sslaccept=strict'
+- **URL for Signing Up**:
+  - `NEXT_PUBLIC_CLERK_SIGN_UP_URL`: URL for signing up.
 
-```
+- **URL to Redirect After Signing In**:
+  - `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL`: URL to redirect after signing in.
+
+- **URL to Redirect After Signing Up**:
+  - `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL`: URL to redirect after signing up.
+
+### Cloudinary Configuration:
+
+- **Your Cloudinary Cloud Name** (Replace with your actual name):
+  - `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`: Your Cloudinary cloud name.
+
+### Database Configuration:
+
+- **Your Database Connection URL** (Replace with your actual database URL):
+  - `DATABASE_URL`: Your database connection URL.
+
+Ensure that you replace the example values with your actual keys, URLs, and names. These environment variables are crucial for the proper functioning of the Dashboard application.
+
 
 ## Key Features
 
@@ -78,3 +91,4 @@ In addition to the existing key features, the Dashboard for Store Management pro
 - **Reporting and Analytics**: Integrate reporting and analytics tools to provide insights into sales, customer behavior, and store performance.
 - **Enhanced Product Search**: Implement advanced product search and filtering options for an improved user experience.
 - **Customer Reviews and Ratings**: Allow customers to leave reviews and ratings for products.
+- **Stripe Pay**: Implement Stripe for payment. 
