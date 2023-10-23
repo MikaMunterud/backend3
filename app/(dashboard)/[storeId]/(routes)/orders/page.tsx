@@ -66,7 +66,7 @@ export default function Orders() {
     <>
       <Heading
         title={`Orders (${orders.length})`}
-        description={'Manage orders för your store'}
+        description={'Manage orders for your store'}
       />
 
       <Separator />

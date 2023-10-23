@@ -95,7 +95,7 @@ export async function POST(
       });
     }
 
-    const result = await prismadb.product.createMany({
+    const result = await prismadb.product.create({
       data: {
         name,
         img,

@@ -115,7 +115,7 @@ export async function PATCH(
       );
     }
 
-    const result = await prismadb.color.updateMany({
+    const result = await prismadb.color.update({
       where: {
         id: colorId,
       },
@@ -132,8 +132,7 @@ export async function PATCH(
       return NextResponse.json({ errorMessage }, { status: 400 });
     } else if (err.code === 'P2002') {
       return NextResponse.json({ err }, { status: 409 });
-    }
-    else {
+    } else {
       return NextResponse.json({ err }, { status: 500 });
     }
   }
