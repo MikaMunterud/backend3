@@ -6,12 +6,12 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 export async function GET(
   request: Request,
   { params }: { params: { storeId: string; orderId: string } }
-){
+) {
   try {
     const { userId } = auth();
 
     if (!userId) {
-      return NextResponse.json({ error: 'Not authorized', status: 401 });
+      return NextResponse.json({ error: "Not authorized", status: 401 });
     }
 
     const { storeId } = params;
@@ -26,22 +26,34 @@ export async function GET(
       return NextResponse.json({ error: "OrderId is required.", status: 400 });
     }
 
-    const orders = await prismadb.order.findMany({
+    const order = await prismadb.order.findFirst({
       where: {
-        id: orderId
-      }
-    })
+        id: orderId,
+      },
+    });
 
-    if (orders.length === 0){
+    if (!order) {
       return NextResponse.json({ error: "No orders were found.", status: 400 });
     }
 
-    return NextResponse.json(orders, { status: 200 });
-  } catch (error){
+    const orderItems = await prismadb.orderItem.findMany({
+      where: {
+        orderId: order.id,
+      },
+    });
+
+    if (!orderItems) {
+      return NextResponse.json({
+        error: "No order items were found.",
+        status: 400,
+      });
+    }
+
+    return NextResponse.json({ order, orderItems }, { status: 200 });
+  } catch (error) {
     return NextResponse.json(error, { status: 500 });
   }
 }
-
 
 export async function PATCH(
   request: Request,
@@ -51,9 +63,9 @@ export async function PATCH(
     const { userId } = auth();
 
     if (!userId) {
-      return NextResponse.json({ error: 'Not authorized', status: 401 });
+      return NextResponse.json({ error: "Not authorized", status: 401 });
     }
-    
+
     const { storeId } = params;
 
     if (!storeId) {
