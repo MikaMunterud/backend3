@@ -72,9 +72,16 @@ export function CellAction({ route, id }: CellActionProps) {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/${route}/${id}`);
-      window.location.reload();
-      toast.success(`${title} deleted.`);
+      const response = await axios.delete(
+        `/api/${params.storeId}/${route}/${id}`,
+      );
+
+      if (response.status !== 200) {
+        toast.error(description);
+      } else {
+        window.location.reload();
+        toast.success(`${title} deleted.`);
+      }
     } catch (error) {
       toast.error(description);
     } finally {
