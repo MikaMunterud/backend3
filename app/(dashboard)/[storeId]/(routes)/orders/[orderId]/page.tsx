@@ -74,7 +74,7 @@ export default function Orders() {
     }
 
     fetchOrders();
-  }, [params.storeId]);
+  }, [params.storeId, params.orderId]);
 
   const updatePrice = async () => {
     setLoading(true);
