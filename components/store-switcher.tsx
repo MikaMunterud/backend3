@@ -18,55 +18,25 @@ import { Check, ChevronsUpDown, PlusCircle, Store } from 'lucide-react';
 
 import { useModalStore } from '@/hooks/use-store-modal';
 import { useRouter, useParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 
-type StoreSwitcherType = {
-  name: string;
-  id: string;
-};
+interface StoreSwitcherProps {
+  stores: { id: string; name: string }[];
+}
 
-export default function StoreSwitcher() {
+export default function StoreSwitcher({ stores }: StoreSwitcherProps) {
   const router = useRouter();
   const params = useParams();
 
   const [open, setOpen] = useState(false);
   const { onOpen } = useModalStore();
 
-  const [stores, setStores] = useState<StoreSwitcherType[]>([]);
-  const [currentStore, setCurrentStore] = useState<StoreSwitcherType>({
-    id: '',
-    name: 'Loading...',
+  const currentStore = stores.find(function (store: {
+    id: string;
+    name: string;
+  }) {
+    return store.id == params.storeId;
   });
-
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(
-    function () {
-      async function getStores() {
-        try {
-          const response = await axios.get('/api/stores');
-          const data = await response.data;
-
-          setStores(data);
-
-          const currentStore = data.find(function (store: {
-            id: string;
-            name: string;
-          }) {
-            return store.id == params.storeId;
-          });
-
-          setCurrentStore(currentStore);
-        } catch (error) {
-        } finally {
-          setMounted(true);
-        }
-      }
-      getStores();
-    },
-    [params.storeId],
-  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -78,7 +48,7 @@ export default function StoreSwitcher() {
           className="w-[200px] justify-between"
         >
           <Store className="mr-2 h-4 w-4" />
-          {mounted ? currentStore?.name : 'Loading...'}
+          {currentStore?.name}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
